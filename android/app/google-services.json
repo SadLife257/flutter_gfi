@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "289301897499",
+    "project_id": "gfi-project-7bbd2",
+    "storage_bucket": "gfi-project-7bbd2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:289301897499:android:ad3549218ad45e2dd4f3be",
+        "android_client_info": {
+          "package_name": "tdtu.edu.vn.gfi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDsdrCodO-Z4LS2eXFtZwV_lmXPZH82xqI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
