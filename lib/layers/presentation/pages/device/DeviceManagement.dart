@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gfi/layers/presentation/pages/DeviceAddPassword.dart';
+import 'package:gfi/layers/presentation/pages/device/DeviceAddPassword.dart';
 import 'package:gfi/layers/presentation/widgets/connect_device_box.dart';
 
 class DeviceManagement extends StatefulWidget {

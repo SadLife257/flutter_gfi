@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gfi/layers/presentation/pages/DeviceManagement.dart';
+import 'package:gfi/layers/presentation/pages/device/DeviceManagement.dart';
 import 'package:gfi/layers/presentation/widgets/device_box.dart';
 
 class RoomManagement extends StatefulWidget {
@@ -46,6 +46,12 @@ class _RoomManagementState extends State<RoomManagement> {
                   color: Theme.of(context).colorScheme.primary,
                 )
             ),
+            actions: [
+              IconButton(
+                onPressed: () {},
+                  icon: Icon(Icons.settings)
+              )
+            ],
           ),
           body: ListView(
             children: [
@@ -85,6 +91,10 @@ class _RoomManagementState extends State<RoomManagement> {
                         },
                         icon: const Icon(Icons.clear)
                     ) : null,
+                    suffixIcon: IconButton(
+                      onPressed: () { /*Edit room name*/ },
+                      icon: Icon(Icons.check),
+                    )
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {

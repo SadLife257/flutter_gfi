@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gfi/layers/presentation/pages/DeviceManagement.dart';
-import 'package:gfi/layers/presentation/pages/RoomManagement.dart';
+import 'package:gfi/layers/presentation/pages/device/DeviceManagement.dart';
+import 'package:gfi/layers/presentation/pages/room/RoomManagement.dart';
 import 'package:gfi/layers/presentation/widgets/custom_icon_button.dart';
 import 'package:gfi/layers/presentation/widgets/device_switch.dart';
 

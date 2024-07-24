@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gfi/layers/presentation/pages/NotificationDetail.dart';
+import 'package:gfi/layers/presentation/pages/notification/NotificationDetail.dart';
 import 'package:gfi/layers/presentation/widgets/notification_message.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:intl/intl.dart';
