@@ -48,16 +48,16 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     return MaterialApp(
       home: SafeArea(
         child: Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           extendBody: true,
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
-            backgroundColor: Colors.white,
+            backgroundColor: Theme.of(context).colorScheme.surface,
             centerTitle: true,
-            title: const Text(
+            title: Text(
               'Reset Password',
               style: TextStyle(
-                  color: Colors.black,
+                  color: Theme.of(context).colorScheme.primary,
                   fontWeight: FontWeight.bold
               ),
             ),
@@ -90,20 +90,27 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   padding: const EdgeInsets.all(16),
                   child: TextFormField(
                     controller: emailController,
-                    decoration: const InputDecoration(
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary
+                    ),
+                    decoration: InputDecoration(
                       hintText: 'Email',
                       labelText: 'Email',
+                      hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
+                      labelStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
                       border: OutlineInputBorder(
+                        borderSide:
+                        BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.0),
                         borderRadius: BorderRadius.all(Radius.circular(16)),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide:
-                        BorderSide(color: Colors.black, width: 1.0),
+                        BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.0),
                         borderRadius: BorderRadius.all(Radius.circular(16)),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide:
-                        BorderSide(color: Colors.black, width: 2.0),
+                        BorderSide(color: Theme.of(context).colorScheme.primary, width: 2.0),
                         borderRadius: BorderRadius.all(Radius.circular(16)),
                       ),
                     ),
@@ -115,25 +122,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(15),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.shade500,
-                          offset: Offset(4, 4),
-                          blurRadius: 15,
-                          spreadRadius: 1
-                        ),
-                        BoxShadow(
-                          color: Colors.white,
-                          offset: Offset(-4, -4),
-                          blurRadius: 15,
-                          spreadRadius: 1
-                        ),
-                      ],
                     ),
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: Colors.black,
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        foregroundColor: Theme.of(context).colorScheme.tertiary,
                         minimumSize: Size.fromHeight(60),
                         shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.all(Radius.circular(16))
