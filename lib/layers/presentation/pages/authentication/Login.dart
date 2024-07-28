@@ -71,7 +71,7 @@ class _LoginState extends State<Login> {
         child: Scaffold(
           backgroundColor: Theme.of(context).colorScheme.surface,
           extendBody: true,
-          resizeToAvoidBottomInset: false,
+          resizeToAvoidBottomInset: true,
           appBar: null,
           body: Center(
             child: Form(

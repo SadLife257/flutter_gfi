@@ -65,9 +65,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                icon: const Icon(
-                    size: 30,
-                    Icons.arrow_back
+                icon: Icon(
+                  size: 30,
+                  Icons.arrow_back,
+                  color: Theme.of(context).colorScheme.primary,
                 )
             ),
           ),
@@ -76,13 +77,14 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Padding(
+                Padding(
                   padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
                   child: Text(
                     'Enter your email, and we will send you a reset password',
                     style: TextStyle(
                         fontSize: 25,
-                        fontWeight: FontWeight.bold
+                        fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.secondary
                     ),
                   ),
                 ),

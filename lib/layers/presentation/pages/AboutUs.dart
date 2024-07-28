@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 class AboutUs extends StatefulWidget {
   const AboutUs({super.key});
 
+  static const route_name = '/about_us';
+
   @override
   State<AboutUs> createState() => _AboutUsState();
 }
@@ -10,8 +12,8 @@ class AboutUs extends StatefulWidget {
 class _AboutUsState extends State<AboutUs> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+    return SafeArea(
+      child: Scaffold(
         extendBody: true,
         backgroundColor: Theme.of(context).colorScheme.surface,
         appBar: AppBar(

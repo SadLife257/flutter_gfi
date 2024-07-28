@@ -1,12 +1,25 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:gfi/layers/data/Actuator.dart';
+import 'package:gfi/layers/data/Sensor.dart';
 
 class Device {
   String name;
+  String image_url;
   String connectionCode;
-  bool isOn;
+  String password;
+  Sensor sensor;
+  Actuator actuator;
   DateTime timestamp;
 
-  Device({required this.name, required this.connectionCode, required this.isOn, required this.timestamp});
+  Device({
+    required this.name,
+    required this.image_url,
+    required this.connectionCode,
+    required this.password,
+    required this.sensor,
+    required this.actuator,
+    required this.timestamp
+  });
 
   factory Device.fromJson(
       DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -15,8 +28,11 @@ class Device {
     final data = snapshot.data();
     return Device(
       name: data?['name'],
+      image_url: data?['image_url'],
       connectionCode: data?['connection_code'],
-      isOn: data?['is_on'],
+      password: data?['password'],
+      sensor: Sensor.fromJson(data?['sensor'], null),
+      actuator: Actuator.fromJson(data?['actuator'], null),
       timestamp: data?['timestamp']
     );
   }
@@ -24,8 +40,11 @@ class Device {
   Map<String,dynamic> toJson(){
     return {
       "name": name,
+      "image_url": image_url,
       "connection_code": connectionCode,
-      "is_on": isOn,
+      'password': password,
+      "sensor": sensor.toJson(),
+      "actuator": actuator.toJson(),
       "timestamp": timestamp
     };
   }

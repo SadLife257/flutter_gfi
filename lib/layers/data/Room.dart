@@ -3,10 +3,10 @@ import 'package:gfi/layers/data/Device.dart';
 
 class Room {
   String name;
-  List<Device> devices;
-  DateTime timestamp;
+  Map<String, Device> devices;
+  DateTime? timestamp;
 
-  Room({required this.name, required this.devices, required this.timestamp});
+  Room({required this.name, required this.devices, this.timestamp});
 
   factory Room.fromJson(
       DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -16,15 +16,15 @@ class Room {
     return Room(
         name: data?['name'],
         devices: data?['devices'],
-        timestamp: data?['timestamp']
+        timestamp: data?['timestamp'],
     );
   }
 
   Map<String,dynamic> toJson(){
     return {
       "name": name,
-      "devices": devices,
-      "timestamp": timestamp
+      "devices": devices.map((k, v) => MapEntry(k, v.toJson())),
+      "timestamp": timestamp,
     };
   }
 }

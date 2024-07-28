@@ -14,6 +14,8 @@ import 'package:image_picker/image_picker.dart';
 class Profile extends StatefulWidget {
   const Profile({super.key});
 
+  static const route_name = '/profile';
+
   @override
   State<Profile> createState() => _ProfileState();
 }
@@ -133,194 +135,192 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: SafeArea(
-        child: Scaffold(
-          extendBody: true,
+    return SafeArea(
+      child: Scaffold(
+        extendBody: true,
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.surface,
-          appBar: AppBar(
-            backgroundColor: Theme.of(context).colorScheme.surface,
-            centerTitle: true,
-            title: Text(
-              'Profile',
-              style: TextStyle(
-                  color: Theme.of(context).colorScheme.primary,
-                  fontWeight: FontWeight.bold
-              ),
-            ),
-            leading: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Icon(
-                  size: 30,
-                  Icons.arrow_back,
-                  color: Theme.of(context).colorScheme.primary,
-                )
+          centerTitle: true,
+          title: Text(
+            'Profile',
+            style: TextStyle(
+                color: Theme.of(context).colorScheme.primary,
+                fontWeight: FontWeight.bold
             ),
           ),
-          body: !(isUserLoaded && isProfileImageLoaded) ? Center(
-            child: CircularProgressIndicator(
-              color: Theme.of(context).colorScheme.primary,
-              backgroundColor: Theme.of(context).colorScheme.surface,
-            ),
-          )
-          :
-          ListView(
-            children: [
-              Padding(
-                padding: EdgeInsets.only(top: 32),
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: ClipOval(
-                    child: Container(
-                      color: Theme.of(context).colorScheme.secondary,
-                      child: Image.memory(
-                        width: 300.0,
-                        height: 300.0,
-                        profileImage!,
-                        fit: BoxFit.scaleDown,
-                      ),
+          leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(
+                size: 30,
+                Icons.arrow_back,
+                color: Theme.of(context).colorScheme.primary,
+              )
+          ),
+        ),
+        body: !(isUserLoaded && isProfileImageLoaded) ? Center(
+          child: CircularProgressIndicator(
+            color: Theme.of(context).colorScheme.primary,
+            backgroundColor: Theme.of(context).colorScheme.surface,
+          ),
+        )
+            :
+        ListView(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(top: 32),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: ClipOval(
+                  child: Container(
+                    color: Theme.of(context).colorScheme.secondary,
+                    child: Image.memory(
+                      width: 300.0,
+                      height: 300.0,
+                      profileImage!,
+                      fit: BoxFit.scaleDown,
                     ),
                   ),
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: ElevatedButton.icon(
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.surface,
+                    foregroundColor: Theme.of(context).colorScheme.primary,
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(16))
+                    )
+                ),
+                onPressed: () {
+                  setState(() {
+                    isProfileImageLoaded = false;
+                  });
+                  pickImage();
+                },
+                label: Text('Upload'),
+                icon: Icon(Icons.edit),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(16, 32, 16, 16),
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text(
+                      'User Information',
+                      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                    ),
+                  ),
+                  Expanded(
+                    child: Divider(
+                      thickness: 0.5,
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            InfoBox(
+              title: 'Username',
+              detail: '${user.firstname} ${user.lastname}',
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              borderColor: Theme.of(context).colorScheme.primary,
+              titleColor: Theme.of(context).colorScheme.secondary,
+              detailColor: Theme.of(context).colorScheme.primary,
+              iconColor: Theme.of(context).colorScheme.primary,
+              isChangeable: true,
+            ),
+            InfoBox(
+              title: 'Email',
+              detail: user.email.toString(),
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              borderColor: Theme.of(context).colorScheme.primary,
+              titleColor: Theme.of(context).colorScheme.secondary,
+              detailColor: Theme.of(context).colorScheme.primary,
+              iconColor: Theme.of(context).colorScheme.primary,
+            ),
+            InfoBox(
+              title: 'Password',
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              borderColor: Theme.of(context).colorScheme.primary,
+              titleColor: Theme.of(context).colorScheme.secondary,
+              detailColor: Theme.of(context).colorScheme.primary,
+              iconColor: Theme.of(context).colorScheme.primary,
+              isChangeable: true,
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(16, 32, 16, 16),
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text(
+                      'User Operation',
+                      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                    ),
+                  ),
+                  Expanded(
+                    child: Divider(
+                      thickness: 0.5,
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.surface,
-                      foregroundColor: Theme.of(context).colorScheme.primary,
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      foregroundColor: Theme.of(context).colorScheme.tertiary,
+                      minimumSize: Size.fromHeight(60),
                       shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(16))
                       )
                   ),
                   onPressed: () {
-                    setState(() {
-                      isProfileImageLoaded = false;
-                    });
-                    pickImage();
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => AboutUs())
+                    );
                   },
-                  label: Text('Upload'),
-                  icon: Icon(Icons.edit),
+                  child: Text('ABOUT US'),
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(16, 32, 16, 16),
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Text(
-                        'User Information',
-                        style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-                      ),
-                    ),
-                    Expanded(
-                      child: Divider(
-                        thickness: 0.5,
-                        color: Theme.of(context).colorScheme.secondary,
-                      ),
-                    ),
-                  ],
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15),
                 ),
-              ),
-              InfoBox(
-                title: 'Username',
-                detail: '${user.firstname} ${user.lastname}',
-                backgroundColor: Theme.of(context).colorScheme.surface,
-                borderColor: Theme.of(context).colorScheme.primary,
-                titleColor: Theme.of(context).colorScheme.secondary,
-                detailColor: Theme.of(context).colorScheme.primary,
-                iconColor: Theme.of(context).colorScheme.primary,
-                isChangeable: true,
-              ),
-              InfoBox(
-                title: 'Email',
-                detail: user.email.toString(),
-                backgroundColor: Theme.of(context).colorScheme.surface,
-                borderColor: Theme.of(context).colorScheme.primary,
-                titleColor: Theme.of(context).colorScheme.secondary,
-                detailColor: Theme.of(context).colorScheme.primary,
-                iconColor: Theme.of(context).colorScheme.primary,
-              ),
-              InfoBox(
-                title: 'Password',
-                backgroundColor: Theme.of(context).colorScheme.surface,
-                borderColor: Theme.of(context).colorScheme.primary,
-                titleColor: Theme.of(context).colorScheme.secondary,
-                detailColor: Theme.of(context).colorScheme.primary,
-                iconColor: Theme.of(context).colorScheme.primary,
-                isChangeable: true,
-              ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(16, 32, 16, 16),
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Text(
-                        'User Operation',
-                        style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-                      ),
-                    ),
-                    Expanded(
-                      child: Divider(
-                        thickness: 0.5,
-                        color: Theme.of(context).colorScheme.secondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(15),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      foregroundColor: Theme.of(context).colorScheme.tertiary,
+                      minimumSize: Size.fromHeight(60),
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(16))
+                      )
                   ),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        foregroundColor: Theme.of(context).colorScheme.tertiary,
-                        minimumSize: Size.fromHeight(60),
-                        shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(16))
-                        )
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => AboutUs())
-                      );
-                    },
-                    child: Text('ABOUT US'),
-                  ),
+                  onPressed: signOut,
+                  child: Text('LOGOUT'),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        foregroundColor: Theme.of(context).colorScheme.tertiary,
-                        minimumSize: Size.fromHeight(60),
-                        shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(16))
-                        )
-                    ),
-                    onPressed: signOut,
-                    child: Text('LOGOUT'),
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

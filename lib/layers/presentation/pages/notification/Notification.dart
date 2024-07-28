@@ -7,6 +7,8 @@ import 'package:intl/intl.dart';
 class Notifications extends StatefulWidget {
   const Notifications({super.key});
 
+  static const route_name = '/notifications';
+
   @override
   State<Notifications> createState() => _NotificationsState();
 }
@@ -36,79 +38,76 @@ class _NotificationsState extends State<Notifications> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: Theme.of(context),
-      home: SafeArea(
-        child: Scaffold(
-          extendBody: true,
+    return SafeArea(
+      child: Scaffold(
+        extendBody: true,
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.surface,
-          appBar: AppBar(
-            backgroundColor: Theme.of(context).colorScheme.surface,
-            centerTitle: true,
-            title: Text(
-              'Notifications',
-              style: TextStyle(
-                  color: Theme.of(context).colorScheme.primary,
-                  fontWeight: FontWeight.bold
-              ),
-            ),
-            leading: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Icon(
-                  size: 30,
-                  Icons.arrow_back,
-                  color: Theme.of(context).colorScheme.primary,
-                )
+          centerTitle: true,
+          title: Text(
+            'Notifications',
+            style: TextStyle(
+                color: Theme.of(context).colorScheme.primary,
+                fontWeight: FontWeight.bold
             ),
           ),
-          body: GroupedListView<dynamic, String>(
-            padding: EdgeInsets.all(10),
-            separator: SizedBox(height: 10,),
-            elements: messages,
-            groupBy: (element) => element['date'],
-            groupComparator: (value1, value2) {
-              DateTime date1 = DateFormat('dd-MM-yyyy').parse(value1);
-              DateTime date2 = DateFormat('dd-MM-yyyy').parse(value2);
-              return date1.compareTo(date2);
-            },
-            order: GroupedListOrder.DESC,
-            groupSeparatorBuilder: (String value) => Padding(
-              padding: const EdgeInsets.fromLTRB(8, 16, 8, 0),
-              child: Text(
-                value,
-                style: TextStyle(
+          leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(
+                size: 30,
+                Icons.arrow_back,
+                color: Theme.of(context).colorScheme.primary,
+              )
+          ),
+        ),
+        body: GroupedListView<dynamic, String>(
+          padding: EdgeInsets.all(10),
+          separator: SizedBox(height: 10,),
+          elements: messages,
+          groupBy: (element) => element['date'],
+          groupComparator: (value1, value2) {
+            DateTime date1 = DateFormat('dd-MM-yyyy').parse(value1);
+            DateTime date2 = DateFormat('dd-MM-yyyy').parse(value2);
+            return date1.compareTo(date2);
+          },
+          order: GroupedListOrder.DESC,
+          groupSeparatorBuilder: (String value) => Padding(
+            padding: const EdgeInsets.fromLTRB(8, 16, 8, 0),
+            child: Text(
+              value,
+              style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).colorScheme.primary
-                ),
               ),
             ),
-            itemBuilder: (context, dynamic element) => Message(
-              title: element['title'] ?? 'error',
-              detail: element['detail'] ?? 'error',
-              isRead: element['is_read'] ?? false,
-              onTap: () {
-                if(!element['is_read']) {
-                  setState(() {
-                    element['is_read'] = true;
-                  });
-                }
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => NotificationDetail(
-                        title: element['title'] ?? 'error',
-                        detail: element['detail'] ?? 'error',
-                    ))
-                );
-              },
-              backgroundColor: Theme.of(context).colorScheme.surface,
-              backgroundUnreadColor: Theme.of(context).colorScheme.secondary,
-              borderColor: Theme.of(context).colorScheme.primary,
-              titleColor: Theme.of(context).colorScheme.primary,
-              iconColor: Theme.of(context).colorScheme.primary,
-              detailColor: Theme.of(context).colorScheme.secondary,
-            ),
+          ),
+          itemBuilder: (context, dynamic element) => Message(
+            title: element['title'] ?? 'error',
+            detail: element['detail'] ?? 'error',
+            isRead: element['is_read'] ?? false,
+            onTap: () {
+              if(!element['is_read']) {
+                setState(() {
+                  element['is_read'] = true;
+                });
+              }
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => NotificationDetail(
+                    title: element['title'] ?? 'error',
+                    detail: element['detail'] ?? 'error',
+                  ))
+              );
+            },
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            backgroundUnreadColor: Theme.of(context).colorScheme.secondary,
+            borderColor: Theme.of(context).colorScheme.primary,
+            titleColor: Theme.of(context).colorScheme.primary,
+            iconColor: Theme.of(context).colorScheme.primary,
+            detailColor: Theme.of(context).colorScheme.secondary,
           ),
         ),
       ),

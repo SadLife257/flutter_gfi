@@ -4,48 +4,37 @@ import 'package:flutter/material.dart';
 import 'package:gfi/layers/data/Device.dart';
 import 'package:gfi/layers/data/Device_2_Room.dart';
 import 'package:gfi/layers/data/Room.dart';
-import 'package:gfi/layers/presentation/pages/device/DeviceManagement.dart';
-import 'package:gfi/layers/presentation/pages/device/DeviceSetting.dart';
-import 'package:gfi/layers/presentation/pages/room/RoomSetting.dart';
-import 'package:gfi/layers/presentation/widgets/device_box.dart';
+import 'package:gfi/layers/presentation/widgets/info_box.dart';
 
-class RoomManagement extends StatefulWidget {
-  const RoomManagement({super.key});
+class DeviceSetting extends StatefulWidget {
+  const DeviceSetting({super.key});
 
-  static const route_name = '/manage_room';
+  static const route_name = '/device_setting';
 
   @override
-  State<RoomManagement> createState() => _RoomManagementState();
+  State<DeviceSetting> createState() => _DeviceSettingState();
 }
 
-class _RoomManagementState extends State<RoomManagement> {
-  late final TextEditingController roomNameController;
+class _DeviceSettingState extends State<DeviceSetting> {
+  late final TextEditingController deviceNameController;
   bool _isEmptyInput = true;
-  late List<Device> devices;
+  late Device device;
   late Room room;
 
   @override
   void initState() {
-    roomNameController = TextEditingController();
+    deviceNameController = TextEditingController();
     super.initState();
   }
 
-  Future<void> deleteRoom() async {
+  Future<void> deleteDevice() async {
     final userId = FirebaseAuth.instance.currentUser!.uid;
 
-    await FirebaseFirestore.instance.collection('users_room').doc(userId).update({
-      roomNameController.text.trim(): FieldValue.delete()
-    });
-  }
+    room.devices.removeWhere((key, value) => value == device);
+    room.timestamp = DateTime.now();
 
-  void openSetting() {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) => RoomSetting()
-    ).then((choice) {
-      if(choice == 'delete'){
-        deleteAlert();
-      }
+    await FirebaseFirestore.instance.collection('users_room').doc(userId).update({
+      room.name: room.toJson()
     });
   }
 
@@ -53,7 +42,7 @@ class _RoomManagementState extends State<RoomManagement> {
     showDialog<String>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        title: Text('Delete ${roomNameController.text.trim()}'),
+        title: Text('Delete ${deviceNameController.text.trim()}'),
         content: Text('Please confirm'),
         backgroundColor: Theme.of(context).colorScheme.surface,
         actions: <Widget>[
@@ -71,7 +60,7 @@ class _RoomManagementState extends State<RoomManagement> {
               foregroundColor: Theme.of(context).colorScheme.primary,
             ),
             onPressed: () {
-              deleteRoom().then((_) {
+              deleteDevice().then((_) {
                 Navigator.popUntil(context, ModalRoute.withName('/'));
               });
             },
@@ -84,18 +73,18 @@ class _RoomManagementState extends State<RoomManagement> {
 
   @override
   Widget build(BuildContext context) {
-    room = ModalRoute.of(context)!.settings.arguments as Room;
-    devices = room.devices.values.toList();
-    roomNameController.text = room.name;
+    final Device_2_Room arg = ModalRoute.of(context)!.settings.arguments as Device_2_Room;
+    room = arg.room;
+    device = arg.device;
+    deviceNameController.text = device.name;
+
     return SafeArea(
       child: Scaffold(
-        extendBody: true,
-        backgroundColor: Theme.of(context).colorScheme.surface,
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.surface,
           centerTitle: true,
           title: Text(
-            'Room Management',
+            'Device Setting',
             style: TextStyle(
                 color: Theme.of(context).colorScheme.primary,
                 fontWeight: FontWeight.bold
@@ -111,28 +100,18 @@ class _RoomManagementState extends State<RoomManagement> {
                 color: Theme.of(context).colorScheme.primary,
               )
           ),
-          actions: [
-            IconButton(
-                onPressed: openSetting,
-                icon: Icon(
-                  size: 30,
-                  Icons.settings,
-                  color: Theme.of(context).colorScheme.primary,
-                )
-            )
-          ],
         ),
         body: ListView(
           children: [
             Padding(
               padding: const EdgeInsets.all(32),
               child: TextFormField(
-                controller: roomNameController,
+                controller: deviceNameController,
                 style: TextStyle(
                     color: Theme.of(context).colorScheme.primary
                 ),
                 decoration: InputDecoration(
-                    labelText: 'Room Name',
+                    labelText: 'Device Name',
                     hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
                     labelStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
                     border: OutlineInputBorder(
@@ -153,7 +132,7 @@ class _RoomManagementState extends State<RoomManagement> {
                     suffix: !_isEmptyInput ? IconButton(
                         alignment: Alignment.topRight,
                         onPressed: () {
-                          roomNameController.clear();
+                          deviceNameController.clear();
                           setState(() {
                             _isEmptyInput = !_isEmptyInput;
                           });
@@ -185,14 +164,14 @@ class _RoomManagementState extends State<RoomManagement> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.all(16),
+              padding: EdgeInsets.fromLTRB(16, 32, 16, 8),
               child: Row(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
                     child: Text(
-                      'Devices',
-                      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                      'Sensor',
+                      style: TextStyle(fontSize: 20, color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold),
                     ),
                   ),
                   Expanded(
@@ -204,56 +183,83 @@ class _RoomManagementState extends State<RoomManagement> {
                 ],
               ),
             ),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: room.devices.length,
-              itemBuilder: (BuildContext context, int i) {
-                return DeviceBox(
-                  title: devices[i].name,
-                  iconPath: devices[i].image_url,
-                  backgroundColor: Theme.of(context).colorScheme.surface,
-                  borderColor: Theme.of(context).colorScheme.primary,
-                  titleColor: Theme.of(context).colorScheme.secondary,
-                  detailColor: Theme.of(context).colorScheme.primary,
-                  iconColor: Theme.of(context).colorScheme.primary,
-                  onDeviceSetting: () {
-                    Navigator.pushNamed(
-                      context,
-                      DeviceSetting.route_name,
-                      arguments: Device_2_Room(device: devices[i], room: room),
-                    );
-                  },
-                );
-              }
+            InfoBox(
+              title: 'Data',
+              detail: '${device.sensor.value.round().toString()} / ${device.sensor.threshold.round().toString()}',
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              borderColor: Theme.of(context).colorScheme.primary,
+              titleColor: Theme.of(context).colorScheme.secondary,
+              detailColor: Theme.of(context).colorScheme.primary,
+              iconColor: Theme.of(context).colorScheme.primary,
+              isChangeable: false,
             ),
             Padding(
-              padding: const EdgeInsets.all(16),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.tertiary,
-                  foregroundColor: Theme.of(context).colorScheme.primary,
-                  minimumSize: Size.fromHeight(75),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                      side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2)
+              padding: EdgeInsets.fromLTRB(16, 32, 16, 8),
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Text(
+                      'Actuator',
+                      style: TextStyle(fontSize: 20, color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold),
+                    ),
                   ),
-                ),
-                onPressed: () {
-                  Navigator.pushNamed(
-                    context,
-                    DeviceManagement.route_name,
-                    arguments: room,
-                  );
-                },
-                child: Icon(
-                    Icons.more_horiz
-                ),
+                  Expanded(
+                    child: Divider(
+                      thickness: 0.5,
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                  ),
+                ],
               ),
             ),
+            InfoBox(
+              title: 'Mode',
+              detail: '${device.actuator.mode ? 'auto' : 'manual'}',
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              borderColor: Theme.of(context).colorScheme.primary,
+              titleColor: Theme.of(context).colorScheme.secondary,
+              detailColor: Theme.of(context).colorScheme.primary,
+              iconColor: Theme.of(context).colorScheme.primary,
+              isChangeable: false,
+            ),
+            InfoBox(
+              title: 'State',
+              detail: '${device.actuator.isOn ? 'on' : 'off'}',
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              borderColor: Theme.of(context).colorScheme.primary,
+              titleColor: Theme.of(context).colorScheme.secondary,
+              detailColor: Theme.of(context).colorScheme.primary,
+              iconColor: Theme.of(context).colorScheme.primary,
+              isChangeable: false,
+            ),
+            Padding(
+              padding: EdgeInsets.all(16),
+              child: Container(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Theme.of(context).colorScheme.primary,
+                    minimumSize: Size.fromHeight(60),
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(16))
+                    ),
+                  ),
+                  onPressed: deleteAlert,
+                  icon: Icon(
+                    Icons.delete,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  label: Text(
+                    'Delete',
+                  ),
+                ),
+              ),
+            )
           ],
         ),
-      ),
+      )
     );
   }
 }

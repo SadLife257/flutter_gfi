@@ -1,19 +1,22 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:gfi/layers/data/Device.dart';
 import 'package:gfi/layers/presentation/pages/device/DeviceManagement.dart';
 import 'package:gfi/layers/presentation/pages/room/RoomManagement.dart';
 import 'package:gfi/layers/presentation/widgets/custom_icon_button.dart';
 import 'package:gfi/layers/presentation/widgets/device_switch.dart';
+import 'package:gfi/layers/presentation/widgets/room_header_box.dart';
+import 'package:gfi/layers/data/Room.dart' as RoomData;
 
 class Room extends StatefulWidget {
   Color borderColor;
   Color backgroundColor;
-  final List<dynamic> devices;
-  final String title;
+  final RoomData.Room room;
 
   Room({
     super.key,
-    required this.title,
-    required this.devices,
+    required this.room,
     this.borderColor = Colors.black,
     this.backgroundColor = Colors.white,}
   );
@@ -23,11 +26,28 @@ class Room extends StatefulWidget {
 }
 
 class _RoomState extends State<Room> {
+  late List<Device> devices;
 
-  void powerSwitchChanged(bool value, int index) {
+  @override
+  void initState() {
+    getDevices();
+    super.initState();
+  }
+
+  void powerSwitchChanged(bool value, int index) async{
     setState(() {
-      widget.devices[index][2] = value;
+      devices[index].actuator.isOn = value;
     });
+
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+
+    await FirebaseFirestore.instance.collection('users_room').doc(userId).update({
+      '${widget.room.name}.devices.${devices[index].connectionCode}.actuator.is_on': value,
+    });
+  }
+
+  void getDevices() {
+    devices = widget.room.devices.values.toList();
   }
 
   @override
@@ -38,133 +58,20 @@ class _RoomState extends State<Room> {
           horizontal: 8
       ),
       children: [
-        Container(
-          decoration: BoxDecoration(
-              border: Border.all(
-                color: widget.borderColor,
-                width: 2.0,
-              ),
-              color: widget.backgroundColor,
-              shape: BoxShape.rectangle,
-              borderRadius: BorderRadius.all(Radius.circular(15))
-          ),
-          child: Padding(
-            padding: EdgeInsets.all(16),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          FittedBox(
-                            fit: BoxFit.scaleDown,
-                            child: Text(
-                              widget.title,
-                              style: TextStyle(fontSize: 25, color: Theme.of(context).colorScheme.tertiary, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Image.asset(
-                                'assets/images/thermometer.png',
-                                height: 35,
-                                color: Theme.of(context).colorScheme.tertiary,
-                              ),
-                              Text(
-                                '26°C',
-                                style: TextStyle(fontSize: 20, color: Theme.of(context).colorScheme.tertiary),
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10),
-                        child: Divider(
-                          thickness: 0.5,
-                          color: Theme.of(context).colorScheme.tertiary,
-                        ),
-                      ),
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text('Manage Room', style: TextStyle(
-                                    color: Theme.of(context).colorScheme.tertiary
-                                ),),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context).colorScheme.tertiary,
-                                    borderRadius: BorderRadius.circular(50),
-                                  ),
-                                  child: IconButton(
-                                    onPressed: () {
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(builder: (context) => RoomManagement())
-                                      );
-                                    },
-                                    icon: Icon(Icons.home_outlined),
-                                    style: IconButton.styleFrom(
-                                      backgroundColor: Theme.of(context).colorScheme.primary,
-                                      foregroundColor: Theme.of(context).colorScheme.tertiary,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text('Add Device', style: TextStyle(
-                                    color: Theme.of(context).colorScheme.tertiary
-                                ),),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context).colorScheme.tertiary,
-                                    borderRadius: BorderRadius.circular(50),
-                                  ),
-                                  child: IconButton(
-                                    onPressed: () {
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(builder: (context) => DeviceManagement())
-                                      );
-                                    },
-                                    icon: Icon(Icons.add),
-                                    style: IconButton.styleFrom(
-                                      backgroundColor: Theme.of(context).colorScheme.primary,
-                                      foregroundColor: Theme.of(context).colorScheme.tertiary,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
+        RoomHeaderBox(
+          title: widget.room.name,
+          onRoomManage: () {
+            Navigator.pushNamed(
+              context,
+              RoomManagement.route_name,
+              arguments: widget.room
+            );
+          },
         ),
         GridView.builder(
           physics: NeverScrollableScrollPhysics(),
           shrinkWrap: true,
-          itemCount: widget.devices.length,
+          itemCount: devices.length,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               childAspectRatio: 1 / 1.3,
@@ -174,13 +81,18 @@ class _RoomState extends State<Room> {
           padding: EdgeInsets.symmetric(vertical: 16),
           itemBuilder: (context, index) {
             return DeviceSwitch(
-              deviceName: widget.devices[index][0],
-              iconPath: widget.devices[index][1],
-              powerOn: widget.devices[index][2],
+              deviceName: devices[index].name,
+              iconPath: devices[index].image_url,
+              powerOn: devices[index].actuator.isOn,
               onChanged: (value) => powerSwitchChanged(value, index),
-              onTap: () {
+              onTap: () async {
                 setState(() {
-                  widget.devices[index][2] = !widget.devices[index][2];
+                  devices[index].actuator.isOn = !devices[index].actuator.isOn;
+                });
+                final userId = FirebaseAuth.instance.currentUser!.uid;
+
+                await FirebaseFirestore.instance.collection('users_room').doc(userId).update({
+                  '${widget.room.name}.devices.${devices[index].connectionCode}.actuator.is_on': devices[index].actuator.isOn,
                 });
               },
               backgroundOnColor: Theme.of(context).colorScheme.primary,

@@ -53,14 +53,20 @@ class DeviceSwitch extends StatelessWidget {
               ),
               Expanded(
                 child: Center(
-                  child: Text(
-                    deviceName,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      color: powerOn ? deviceNameOnColor : deviceNameOffColor,
-                      overflow: TextOverflow.ellipsis,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 8
+                    ),
+                    child: Text(
+                      deviceName,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                        color: powerOn ? deviceNameOnColor : deviceNameOffColor,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      maxLines: 2,
                     ),
                   ),
                 ),

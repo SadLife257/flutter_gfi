@@ -7,6 +7,8 @@ import 'package:gfi/layers/presentation/pages/authentication/Login.dart';
 class AuthReDirect extends StatelessWidget {
   const AuthReDirect({super.key});
 
+  static const route_name = '/';
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(

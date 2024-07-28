@@ -102,7 +102,7 @@ class _RegisterState extends State<Register> {
         child: Scaffold(
           backgroundColor: Theme.of(context).colorScheme.surface,
           extendBody: true,
-          resizeToAvoidBottomInset: false,
+          resizeToAvoidBottomInset: true,
           appBar: null,
           body: Center(
             child: SingleChildScrollView(

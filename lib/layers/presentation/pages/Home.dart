@@ -2,7 +2,11 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:gfi/layers/data/Actuator.dart';
+import 'package:gfi/layers/data/Device.dart';
+import 'package:gfi/layers/data/Sensor.dart';
 import 'package:gfi/layers/data/UserDetail.dart';
 import 'package:gfi/layers/presentation/pages/notification/Notification.dart';
 import 'package:gfi/layers/presentation/pages/Profile.dart';
@@ -10,8 +14,11 @@ import 'package:gfi/layers/presentation/pages/room/Room.dart';
 import 'package:gfi/layers/presentation/pages/Setting.dart';
 import 'package:gfi/layers/presentation/widgets/custom_icon_button.dart';
 import 'package:gfi/layers/presentation/widgets/custom_notify_icon_button.dart';
+import 'package:gfi/layers/presentation/widgets/date_weather_box.dart';
+import 'package:gfi/layers/presentation/widgets/empty_tabview.dart';
 import 'package:gfi/layers/presentation/widgets/tabbar_chip.dart';
 import 'package:intl/intl.dart';
+import 'package:gfi/layers/data/Room.dart' as RoomData;
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -20,48 +27,22 @@ class Home extends StatefulWidget {
   State<Home> createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
-  late final TabController _tabController;
+class _HomeState extends State<Home> with TickerProviderStateMixin {
+  late TabController _tabController;
+  // late Stream<QuerySnapshot> stream;
+  late final String userId;
 
-  late final UserDetail user;
-  bool isLoaded = false;
+  late UserDetail user;
+  bool isUserLoaded = false;
+  bool isRoomLoaded = false;
 
   final double horizontalPadding = 20;
   final double verticalPadding = 25;
   late final String date;
   late String time;
-
-  List rooms = [
-    {
-      'name' : 'Phòng ăn',
-      'icon' : Icons.home,
-      'devices' : [
-        ["Electricity", "assets/images/electricity.png", true],
-        ["Gas", "assets/images/gas-bottle.png", false],
-      ],
-    },
-    {
-      'name' : 'Phòng ngủ 1',
-      'icon' : Icons.home,
-      'devices' : [
-        ["Electricity", "assets/images/electricity.png", true]
-      ],
-    },
-    {
-      'name' : 'Phòng ngủ 2',
-      'icon' : Icons.home,
-      'devices' : [
-        ["Electricity", "assets/images/electricity.png", true]
-      ],
-    },
-    {
-      'name' : 'Phòng khách',
-      'icon' : Icons.home,
-      'devices' : [
-        ["Electricity", "assets/images/electricity.png", true],
-      ],
-    },
-  ];
+  late Future<List<RoomData.Room>> futureRoom;
+  late List<Widget> roomView;
+  late List<Widget> tabView;
 
   List messages = [
     {'date': '16-07-2024', 'is_read': false, 'title': 'Notification Title 1', 'detail': 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia, molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit fugiat iusto fuga praesentium optio, eaque rerum! Provident similique accusantium nemo autem. Veritatis obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas aliquid. Reprehenderit, quia.\nLorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia, molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit fugiat iusto fuga praesentium optio, eaque rerum! Provident similique accusantium nemo autem. Veritatis obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas aliquid. Reprehenderit, quia.\nLorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia, molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit fugiat iusto fuga praesentium optio, eaque rerum! Provident similique accusantium nemo autem. Veritatis obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas aliquid. Reprehenderit, quia.\nLorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia, molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit fugiat iusto fuga praesentium optio, eaque rerum! Provident similique accusantium nemo autem. Veritatis obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas aliquid. Reprehenderit, quia.'},
@@ -75,15 +56,14 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     {'date': '04-07-2024', 'is_read': true, 'title': 'Notification Title 9', 'detail': 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia, molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit fugiat iusto fuga praesentium optio, eaque rerum! Provident similique accusantium nemo autem. Veritatis obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas aliquid. Reprehenderit, quia.\nLorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia, molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit fugiat iusto fuga praesentium optio, eaque rerum! Provident similique accusantium nemo autem. Veritatis obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas aliquid. Reprehenderit, quia.\nLorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia, molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit fugiat iusto fuga praesentium optio, eaque rerum! Provident similique accusantium nemo autem. Veritatis obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas aliquid. Reprehenderit, quia.\nLorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia, molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius sed odit fugiat iusto fuga praesentium optio, eaque rerum! Provident similique accusantium nemo autem. Veritatis obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas aliquid. Reprehenderit, quia.'},
   ];
 
+  late int selectedTab;
+
   @override
   void initState() {
-    _tabController = TabController(length: rooms.length, vsync: this);
+    selectedTab = 0;
+    userId = FirebaseAuth.instance.currentUser!.uid;
     getUser();
-    DateTime today = DateTime.now();
-    DateFormat formatter = DateFormat('EEEE, d MMMM, yyyy');
-    date = formatter.format(today);
-    time = _formatDateTime(DateTime.now());
-    Timer.periodic(Duration(seconds: 1), (Timer t) => _getTime());
+    print('-----------Fired');
     super.initState();
   }
 
@@ -93,20 +73,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
-  void _getTime() {
-    final DateTime now = DateTime.now();
-    final String formattedDateTime = _formatDateTime(now);
-    setState(() {
-      time = formattedDateTime;
-    });
-  }
-
-  String _formatDateTime(DateTime dateTime) {
-    return DateFormat('hh:mm').format(dateTime);
-  }
-
   Future getUser() async {
-    final userId = FirebaseAuth.instance.currentUser!.uid;
     final ref = FirebaseFirestore.instance.collection('users_info').doc(userId).withConverter(
       fromFirestore: UserDetail.fromJson,
       toFirestore: (UserDetail user, _) => user.toJson(),
@@ -114,17 +81,17 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     final docSnap = await ref.get();
     user = docSnap.data()!;
     setState(() {
-      isLoaded = true;
+      isUserLoaded = true;
     });
   }
 
-  List<Widget> getTabBar()
+  List<Widget> getTabBar(List<RoomData.Room> rooms)
   {
     List<Widget> result = [];
-    for (var i in rooms) {
+    for (RoomData.Room i in rooms) {
       result.add(TabBarChip(
-        icon: i['icon'],
-        title: i['name'],
+        icon: Icons.meeting_room,
+        title: i.name,
         backgroundColor: Theme.of(context).colorScheme.tertiary,
         borderColor: Theme.of(context).colorScheme.primary,
       ));
@@ -132,13 +99,46 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
     return result;
   }
 
-  List<Widget> getRoom()
+  List<RoomData.Room> getRoom(DocumentSnapshot<Map<String, dynamic>> doc) {
+    List<RoomData.Room> rooms = [];
+    if(doc.data() != null) {
+      final data = doc.data() as Map<String, dynamic>;
+      data.forEach((k, v) {
+        // DateTime time = v['timestamp'].toDate();
+        rooms.add(
+            RoomData.Room(
+              name: v['name'],
+              devices: v['devices'].map<String, Device>((key, data) =>
+                  MapEntry<String, Device>(key, new Device(
+                      name: data?['name'],
+                      image_url: data?['image_url'],
+                      connectionCode: data?['connection_code'],
+                      password: data?['password'],
+                      sensor: Sensor(
+                        value: data?['sensor']['value'],
+                        threshold: data?['sensor']['threshold'],
+                      ),
+                      actuator: Actuator(
+                        mode: data?['actuator']['mode'],
+                        isOn: data?['actuator']['is_on'],
+                      ),
+                      timestamp: data?['timestamp'].toDate()
+                  ))
+              ),
+              timestamp: v['timestamp'].toDate(),
+            )
+        );
+      });
+    }
+    return rooms;
+  }
+
+  List<Widget> generateRoom(List<RoomData.Room> rooms)
   {
     List<Widget> result = [];
-    for (var i in rooms) {
+    for (RoomData.Room i in rooms) {
       result.add(Room(
-        title: i['name'],
-        devices: i['devices'],
+        room: i,
         backgroundColor: Theme.of(context).colorScheme.primary,
         borderColor: Theme.of(context).colorScheme.tertiary,
       ));
@@ -158,50 +158,49 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: Theme.of(context),
-      home: SafeArea(
-        child: Scaffold(
-          extendBody: true,
-          backgroundColor: Theme.of(context).colorScheme.surface,
-          appBar: null,
-          body: !isLoaded ? Center(
-            child: CircularProgressIndicator(
-              color: Theme.of(context).colorScheme.primary,
-              backgroundColor: Theme.of(context).colorScheme.surface,
-            ),
-          )
-              :
-          Column(
-            mainAxisSize:MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: horizontalPadding,
-                  vertical: verticalPadding,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CustomIconButton(
-                      icon: Icons.person,
-                      onPressed: () {
-                        Navigator.of(context).push(
+    return SafeArea(
+      child: Scaffold(
+        extendBody: true,
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        appBar: null,
+        body: !(isUserLoaded) ? Center(
+          child: CircularProgressIndicator(
+            color: Theme.of(context).colorScheme.primary,
+            backgroundColor: Theme.of(context).colorScheme.surface,
+          ),
+        )
+        :
+        Column(
+          mainAxisSize:MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: horizontalPadding,
+                vertical: verticalPadding,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CustomIconButton(
+                    icon: Icons.person,
+                    onPressed: () {
+                      Navigator.of(context).push(
                           MaterialPageRoute(builder: (context) => Profile())
-                        );
-                      },
-                      backgroundColor: Theme.of(context).colorScheme.surface,
-                      borderColor: Theme.of(context).colorScheme.primary,
-                      iconColor: Theme.of(context).colorScheme.primary,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
+                      );
+                    },
+                    backgroundColor: Theme.of(context).colorScheme.surface,
+                    borderColor: Theme.of(context).colorScheme.primary,
+                    iconColor: Theme.of(context).colorScheme.primary,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
                           padding: EdgeInsets.only(right: 16),
                           child: CustomNotifyIconButton(
-                            icon: Icons.notifications,
+                            iconActive: Icons.notifications_active,
+                            iconInacctive: Icons.notifications,
                             onPressed: () {
                               Navigator.of(context).push(
                                   MaterialPageRoute(builder: (context) => Notifications())
@@ -212,133 +211,127 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                             borderColor: Theme.of(context).colorScheme.primary,
                             iconColor: Theme.of(context).colorScheme.primary,
                           )
-                        ),
-                        CustomIconButton(
-                          icon: Icons.more_horiz,
-                          onPressed: () {
-                            Navigator.of(context).push(
-                                MaterialPageRoute(builder: (context) => Setting())
-                            );
-                          },
-                          backgroundColor: Theme.of(context).colorScheme.surface,
-                          borderColor: Theme.of(context).colorScheme.primary,
-                          iconColor: Theme.of(context).colorScheme.primary,
-                        )
-                      ],
-                    )
-                  ],
-                ),
+                      ),
+                      CustomIconButton(
+                        icon: Icons.more_horiz,
+                        onPressed: () async {
+                          Navigator.of(context).push(
+                              MaterialPageRoute(builder: (context) => Setting())
+                          );
+                        },
+                        backgroundColor: Theme.of(context).colorScheme.surface,
+                        borderColor: Theme.of(context).colorScheme.primary,
+                        iconColor: Theme.of(context).colorScheme.primary,
+                      )
+                    ],
+                  )
+                ],
               ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Welcome home ${user.firstname}",
-                      style: TextStyle(fontSize: 25, color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: Text(
-                                time,
-                                style:  TextStyle(fontSize: 35, color: Theme.of(context).colorScheme.secondary),
-                              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Welcome home ${user.firstname}",
+                    style: TextStyle(fontSize: 25, color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  DateWeatherBox(),
+                ],
+              ),
+            ),
+            StreamBuilder(
+              stream: FirebaseFirestore.instance.collection('users_room').doc(userId).snapshots(),
+              builder: (context, snapshot) {
+                if(snapshot.hasData) {
+                  List<RoomData.Room> rooms = getRoom(snapshot.data!);
+                  if(rooms.isNotEmpty) {
+                    _tabController = TabController(length: rooms.length, vsync: this);
+                    _tabController.index = selectedTab;
+                    _tabController.addListener(() {
+                      selectedTab = _tabController.index;
+                    });
+                    roomView = generateRoom(rooms);
+                    tabView = getTabBar(rooms);
+                    return Expanded(
+                      child: Column(
+                        mainAxisSize:MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                            child: TabBar(
+                              tabAlignment: TabAlignment.center,
+                              isScrollable: true,
+                              unselectedLabelColor: Theme.of(context).colorScheme.secondary,
+                              labelColor: Theme.of(context).colorScheme.primary,
+                              labelPadding: EdgeInsets.only(right: 10),
+                              indicatorColor: Colors.transparent,
+                              dividerColor: Colors.transparent,
+                              tabs: tabView,
+                              controller: _tabController,
+                              indicatorSize: TabBarIndicatorSize.tab,
                             ),
-                            FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: Text(
-                                date,
-                                style:  TextStyle(fontSize: 15, color: Theme.of(context).colorScheme.secondary),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Row(
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                            child: Row(
                               children: [
-                                Image.asset(
-                                  'assets/images/cloudy.png',
-                                  height: 20,
-                                  color: Theme.of(context).colorScheme.primary,
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                  child: Text(
+                                    'Devices',
+                                    style: TextStyle(fontSize: 20, color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold),
+                                  ),
                                 ),
-                                SizedBox(width: 4,),
-                                Text(
-                                    'Cloudy'
+                                Expanded(
+                                  child: Divider(
+                                    thickness: 0.5,
+                                    color: Theme.of(context).colorScheme.secondary,
+                                  ),
                                 ),
                               ],
                             ),
-                            FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: Text(
-                                '26°C',
-                                style: TextStyle(fontSize: 60, color: Theme.of(context).colorScheme.primary),
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                              child: TabBarView(
+                                controller: _tabController,
+                                children: roomView,
                               ),
                             ),
-                          ],
-                        )
-                      ],
-                    )
-                  ],
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-                child: TabBar(
-                  tabAlignment: TabAlignment.center,
-                  isScrollable: true,
-                  unselectedLabelColor: Theme.of(context).colorScheme.secondary,
-                  labelColor: Theme.of(context).colorScheme.primary,
-                  labelPadding: EdgeInsets.only(right: 10),
-                  indicatorColor: Colors.transparent,
-                  dividerColor: Colors.transparent,
-                  tabs: getTabBar(),
-                  controller: _tabController,
-                  indicatorSize: TabBarIndicatorSize.tab,
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: Text(
-                        'Devices',
-                        style: TextStyle(fontSize: 20, color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold),
+                          )
+                        ],
                       ),
+                    );
+                  } else {
+                    return Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: verticalPadding,
+                            horizontal: horizontalPadding
+                        ),
+                        child: EmptyTabView()
+                      )
+                    );
+                  }
+                }
+                return Expanded(
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: Theme.of(context).colorScheme.primary,
+                      backgroundColor: Theme.of(context).colorScheme.surface,
                     ),
-                    Expanded(
-                      child: Divider(
-                        thickness: 0.5,
-                        color: Theme.of(context).colorScheme.secondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-                  child: TabBarView(
-                    controller: _tabController,
-                    children: getRoom(),
                   ),
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
+                );
+              },
+            ),
+          ],
+        )
+      )
     );
   }
 }

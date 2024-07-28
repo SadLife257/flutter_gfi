@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class CustomNotifyIconButton extends StatelessWidget {
   Color borderColor;
   Color backgroundColor;
   Color iconColor;
-  final IconData icon;
+  final IconData iconActive;
+  final IconData iconInacctive;
   final void Function() onPressed;
   final int unreadMessage;
 
@@ -13,7 +15,8 @@ class CustomNotifyIconButton extends StatelessWidget {
     this.borderColor = Colors.black,
     this.backgroundColor = Colors.white,
     this.iconColor = Colors.black,
-    required this.icon,
+    required this.iconActive,
+    required this.iconInacctive,
     required this.onPressed,
     required this.unreadMessage,
   });
@@ -48,9 +51,9 @@ class CustomNotifyIconButton extends StatelessWidget {
           child: Row(
             children: [
               Icon(
-                icon,
+                unreadMessageCount().isEmpty ? iconInacctive : iconActive,
                 size: 20.0,
-                color: iconColor,
+                color: unreadMessageCount().isEmpty ? iconColor : Colors.redAccent,
               ),
               Text(unreadMessageCount())
             ],

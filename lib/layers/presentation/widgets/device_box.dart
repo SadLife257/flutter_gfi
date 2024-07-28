@@ -8,6 +8,7 @@ class DeviceBox extends StatelessWidget {
   Color iconColor;
   final String title;
   final String iconPath;
+  final Function() onDeviceSetting;
 
   DeviceBox({
     super.key,
@@ -18,6 +19,7 @@ class DeviceBox extends StatelessWidget {
     this.backgroundColor = Colors.white,
     required this.title,
     required this.iconPath,
+    required this.onDeviceSetting,
   });
 
   @override
@@ -41,12 +43,12 @@ class DeviceBox extends StatelessWidget {
                 flex: 1,
                 child: Image.asset(
                   iconPath,
-                  height: 65,
+                  height: 60,
                   color: iconColor,
                 ),
               ),
               Expanded(
-                flex: 2,
+                flex: 3,
                 child: Text(
                   title,
                   style: TextStyle(
@@ -60,7 +62,7 @@ class DeviceBox extends StatelessWidget {
               Expanded(
                 flex: 1,
                 child: IconButton(
-                    onPressed: () {},
+                    onPressed: onDeviceSetting,
                     icon: Icon(Icons.mode, color: iconColor,)
                 ),
               )
