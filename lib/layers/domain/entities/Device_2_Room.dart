@@ -1,5 +1,5 @@
-import 'package:gfi/layers/data/Device.dart';
-import 'package:gfi/layers/data/Room.dart';
+import 'package:gfi/layers/domain/entities/Device.dart';
+import 'package:gfi/layers/domain/entities/Room.dart';
 
 class Device_2_Room {
   Device _device;

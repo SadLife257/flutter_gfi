@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:gfi/layers/data/Room.dart';
+import 'package:gfi/layers/domain/entities/Room.dart';
 import 'package:intl/intl.dart';
 
 class RoomCreate extends StatefulWidget {

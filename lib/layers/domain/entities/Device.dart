@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:gfi/layers/data/Actuator.dart';
-import 'package:gfi/layers/data/Sensor.dart';
+import 'package:gfi/layers/domain/entities/Actuator.dart';
+import 'package:gfi/layers/domain/entities/Sensor.dart';
 
 class Device {
   String name;

@@ -1,11 +1,11 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:gfi/layers/data/Actuator.dart';
-import 'package:gfi/layers/data/Device.dart';
-import 'package:gfi/layers/data/Device_2_Room.dart';
-import 'package:gfi/layers/data/Room.dart';
-import 'package:gfi/layers/data/Sensor.dart';
+import 'package:gfi/layers/domain/entities/Actuator.dart';
+import 'package:gfi/layers/domain/entities/Device.dart';
+import 'package:gfi/layers/domain/entities/Device_2_Room.dart';
+import 'package:gfi/layers/domain/entities/Room.dart';
+import 'package:gfi/layers/domain/entities/Sensor.dart';
 import 'package:gfi/layers/presentation/widgets/connect_device_box.dart';
 
 class DeviceManagement extends StatefulWidget {

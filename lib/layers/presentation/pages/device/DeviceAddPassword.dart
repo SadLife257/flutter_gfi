@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:gfi/layers/data/Device.dart';
-import 'package:gfi/layers/data/Device_2_Room.dart';
-import 'package:gfi/layers/data/Room.dart';
+import 'package:gfi/layers/domain/entities/Device.dart';
+import 'package:gfi/layers/domain/entities/Device_2_Room.dart';
+import 'package:gfi/layers/domain/entities/Room.dart';
 
 class DeviceAddPassword extends StatefulWidget {
   const DeviceAddPassword({super.key});

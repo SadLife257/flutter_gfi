@@ -2,12 +2,11 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:gfi/layers/data/Actuator.dart';
-import 'package:gfi/layers/data/Device.dart';
-import 'package:gfi/layers/data/Sensor.dart';
-import 'package:gfi/layers/data/UserDetail.dart';
+import 'package:gfi/layers/domain/entities/Actuator.dart';
+import 'package:gfi/layers/domain/entities/Device.dart';
+import 'package:gfi/layers/domain/entities/Sensor.dart';
+import 'package:gfi/layers/domain/entities/UserDetail.dart';
 import 'package:gfi/layers/presentation/pages/notification/Notification.dart';
 import 'package:gfi/layers/presentation/pages/Profile.dart';
 import 'package:gfi/layers/presentation/pages/room/Room.dart';
@@ -18,7 +17,7 @@ import 'package:gfi/layers/presentation/widgets/date_weather_box.dart';
 import 'package:gfi/layers/presentation/widgets/empty_tabview.dart';
 import 'package:gfi/layers/presentation/widgets/tabbar_chip.dart';
 import 'package:intl/intl.dart';
-import 'package:gfi/layers/data/Room.dart' as RoomData;
+import 'package:gfi/layers/domain/entities/Room.dart' as RoomData;
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -104,7 +103,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     if(doc.data() != null) {
       final data = doc.data() as Map<String, dynamic>;
       data.forEach((k, v) {
-        // DateTime time = v['timestamp'].toDate();
         rooms.add(
             RoomData.Room(
               name: v['name'],

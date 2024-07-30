@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:gfi/layers/data/Device.dart';
+import 'package:gfi/layers/domain/entities/Device.dart';
 
 class Room {
   String name;

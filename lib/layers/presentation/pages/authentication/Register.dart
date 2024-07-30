@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:gfi/layers/domain/entities/UserDetail.dart';
 import 'package:gfi/layers/presentation/pages/AuthReDirect.dart';
-import 'package:gfi/layers/data/UserDetail.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});

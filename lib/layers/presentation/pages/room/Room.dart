@@ -1,13 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:gfi/layers/data/Device.dart';
-import 'package:gfi/layers/presentation/pages/device/DeviceManagement.dart';
+import 'package:gfi/layers/domain/entities/Device.dart';
 import 'package:gfi/layers/presentation/pages/room/RoomManagement.dart';
-import 'package:gfi/layers/presentation/widgets/custom_icon_button.dart';
 import 'package:gfi/layers/presentation/widgets/device_switch.dart';
 import 'package:gfi/layers/presentation/widgets/room_header_box.dart';
-import 'package:gfi/layers/data/Room.dart' as RoomData;
+import 'package:gfi/layers/domain/entities/Room.dart' as RoomData;
 
 class Room extends StatefulWidget {
   Color borderColor;
@@ -30,7 +28,6 @@ class _RoomState extends State<Room> {
 
   @override
   void initState() {
-    getDevices();
     super.initState();
   }
 
@@ -46,12 +43,9 @@ class _RoomState extends State<Room> {
     });
   }
 
-  void getDevices() {
-    devices = widget.room.devices.values.toList();
-  }
-
   @override
   Widget build(BuildContext context) {
+    devices = widget.room.devices.values.toList();
     return ListView(
       shrinkWrap:true,
       padding: EdgeInsets.symmetric(
@@ -67,6 +61,9 @@ class _RoomState extends State<Room> {
               arguments: widget.room
             );
           },
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          borderColor: Theme.of(context).colorScheme.primary,
+          iconColor: Theme.of(context).colorScheme.tertiary,
         ),
         GridView.builder(
           physics: NeverScrollableScrollPhysics(),
