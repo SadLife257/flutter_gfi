@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gfi/layers/domain/entities/Actuator.dart';
 import 'package:gfi/layers/domain/entities/Device.dart';
+import 'package:gfi/layers/domain/entities/Device/Hardware.dart';
 import 'package:gfi/layers/domain/entities/Sensor.dart';
 import 'package:gfi/layers/domain/entities/UserDetail.dart';
 import 'package:gfi/layers/presentation/pages/notification/Notification.dart';
@@ -36,7 +37,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   bool isRoomLoaded = false;
 
   final double horizontalPadding = 20;
-  final double verticalPadding = 25;
+  final double verticalPadding = 15;
   late final String date;
   late String time;
   late Future<List<RoomData.Room>> futureRoom;
@@ -62,7 +63,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     selectedTab = 0;
     userId = FirebaseAuth.instance.currentUser!.uid;
     getUser();
-    print('-----------Fired');
     super.initState();
   }
 
@@ -98,32 +98,34 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     return result;
   }
 
+  // List<RoomData.Room> getRoomTest() {
+  //   FirebaseFirestore.instance.collection('users_room').doc(userId).collection('room').get().then(
+  //     (querySnapshot) {
+  //       print("Successfully completed");
+  //       for (var docSnapshot in querySnapshot.docs) {
+  //         print('${docSnapshot.id} => ${docSnapshot.data()}');
+  //       }
+  //     },
+  //     onError: (e) => print("Error completing: $e"),
+  //   );
+  // }
+
   List<RoomData.Room> getRoom(DocumentSnapshot<Map<String, dynamic>> doc) {
     List<RoomData.Room> rooms = [];
     if(doc.data() != null) {
       final data = doc.data() as Map<String, dynamic>;
       data.forEach((k, v) {
         rooms.add(
-            RoomData.Room(
-              name: v['name'],
-              devices: v['devices'].map<String, Device>((key, data) =>
-                  MapEntry<String, Device>(key, new Device(
-                      name: data?['name'],
-                      image_url: data?['image_url'],
-                      connectionCode: data?['connection_code'],
-                      password: data?['password'],
-                      sensor: Sensor(
-                        value: data?['sensor']['value'],
-                        threshold: data?['sensor']['threshold'],
-                      ),
-                      actuator: Actuator(
-                        mode: data?['actuator']['mode'],
-                        isOn: data?['actuator']['is_on'],
-                      ),
-                      timestamp: data?['timestamp'].toDate()
-                  ))
-              ),
-              timestamp: v['timestamp'].toDate(),
+          RoomData.Room(
+            name: v['name'],
+            hardware: v['hardware'].map<String, Hardware>((key, data) =>
+              MapEntry<String, Hardware>(key, new Hardware(
+                name: data?['name'],
+                image_url: data?['image_url'],
+                token: data?['token'],
+              ))
+            ),
+            timestamp: v['timestamp'].toDate(),
             )
         );
       });
@@ -159,6 +161,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     return SafeArea(
       child: Scaffold(
         extendBody: true,
+        resizeToAvoidBottomInset: false,
         backgroundColor: Theme.of(context).colorScheme.surface,
         appBar: null,
         body: !(isUserLoaded) ? Center(
@@ -259,7 +262,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                            padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 0),
                             child: TabBar(
                               tabAlignment: TabAlignment.center,
                               isScrollable: true,
@@ -280,7 +283,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                                 Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                                   child: Text(
-                                    'Devices',
+                                    'Rooms',
                                     style: TextStyle(fontSize: 20, color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold),
                                   ),
                                 ),

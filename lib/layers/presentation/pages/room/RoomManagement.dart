@@ -2,9 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gfi/layers/domain/entities/Device.dart';
+import 'package:gfi/layers/domain/entities/Device/Hardware.dart';
 import 'package:gfi/layers/domain/entities/Device_2_Room.dart';
+import 'package:gfi/layers/domain/entities/Hardware_2_Room.dart';
 import 'package:gfi/layers/domain/entities/Room.dart';
 import 'package:gfi/layers/presentation/pages/device/DeviceManagement.dart';
+import 'package:gfi/layers/presentation/pages/device/DeviceScan.dart';
 import 'package:gfi/layers/presentation/pages/device/DeviceSetting.dart';
 import 'package:gfi/layers/presentation/pages/room/RoomSetting.dart';
 import 'package:gfi/layers/presentation/widgets/device_box.dart';
@@ -21,13 +24,32 @@ class RoomManagement extends StatefulWidget {
 class _RoomManagementState extends State<RoomManagement> {
   late final TextEditingController roomNameController;
   bool _isEmptyInput = true;
-  late List<Device> devices;
+  final roomManagementKey = GlobalKey<FormState>();
+  late List<Hardware> hardware;
   late Room room;
 
   @override
   void initState() {
     roomNameController = TextEditingController();
     super.initState();
+  }
+
+  Future<void> updateRoomName() async {
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+
+    String oldRoomName = room.name;
+    String newRoomName = roomNameController.text.trim();
+    room.name = newRoomName;
+
+    //var roomID = await FirebaseFirestore.instance.collection('users_room').doc(userId);
+
+    await FirebaseFirestore.instance.collection('users_room').doc(userId).update({
+      newRoomName: room.toJson()
+    }).then((_) async {
+      await FirebaseFirestore.instance.collection('users_room').doc(userId).update({
+        oldRoomName: FieldValue.delete()
+      });
+    });
   }
 
   Future<void> deleteRoom() async {
@@ -85,7 +107,7 @@ class _RoomManagementState extends State<RoomManagement> {
   @override
   Widget build(BuildContext context) {
     room = ModalRoute.of(context)!.settings.arguments as Room;
-    devices = room.devices.values.toList();
+    hardware = room.hardware.values.toList();
     roomNameController.text = room.name;
     return SafeArea(
       child: Scaffold(
@@ -122,136 +144,144 @@ class _RoomManagementState extends State<RoomManagement> {
             )
           ],
         ),
-        body: ListView(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(32),
-              child: TextFormField(
-                controller: roomNameController,
-                style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary
-                ),
-                decoration: InputDecoration(
-                    labelText: 'Room Name',
-                    hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
-                    labelStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
-                    border: OutlineInputBorder(
-                      borderSide:
-                      BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.0),
-                      borderRadius: BorderRadius.all(Radius.circular(16)),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide:
-                      BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.0),
-                      borderRadius: BorderRadius.all(Radius.circular(16)),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide:
-                      BorderSide(color: Theme.of(context).colorScheme.primary, width: 2.0),
-                      borderRadius: BorderRadius.all(Radius.circular(16)),
-                    ),
-                    suffix: !_isEmptyInput ? IconButton(
-                        alignment: Alignment.topRight,
+        body: Form(
+          key: roomManagementKey,
+          child: ListView(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(32),
+                child: TextFormField(
+                  controller: roomNameController,
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.primary
+                  ),
+                  decoration: InputDecoration(
+                      labelText: 'Room Name',
+                      hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
+                      labelStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
+                      border: OutlineInputBorder(
+                        borderSide:
+                        BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.0),
+                        borderRadius: BorderRadius.all(Radius.circular(16)),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide:
+                        BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.0),
+                        borderRadius: BorderRadius.all(Radius.circular(16)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide:
+                        BorderSide(color: Theme.of(context).colorScheme.primary, width: 2.0),
+                        borderRadius: BorderRadius.all(Radius.circular(16)),
+                      ),
+                      suffix: !_isEmptyInput ? IconButton(
+                          alignment: Alignment.topRight,
+                          onPressed: () {
+                            roomNameController.clear();
+                            setState(() {
+                              _isEmptyInput = !_isEmptyInput;
+                            });
+                          },
+                          icon: Icon(
+                            Icons.clear,
+                            color: Theme.of(context).colorScheme.primary,
+                          )
+                      ) : null,
+                      suffixIcon: IconButton(
                         onPressed: () {
-                          roomNameController.clear();
-                          setState(() {
-                            _isEmptyInput = !_isEmptyInput;
-                          });
+                          if(roomManagementKey.currentState!.validate()) {
+                            updateRoomName();
+                          }
                         },
                         icon: Icon(
-                          Icons.clear,
+                          Icons.check,
                           color: Theme.of(context).colorScheme.primary,
-                        )
-                    ) : null,
-                    suffixIcon: IconButton(
-                      onPressed: () { /*Edit room name*/ },
-                      icon: Icon(
-                        Icons.check,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    )
+                        ),
+                      )
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Please enter your room name";
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {
+                    setState(() {
+                      _isEmptyInput = value.isEmpty;
+                      roomNameController.text = value;
+                    });
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Please enter your room name";
-                  }
-                  return null;
-                },
-                onChanged: (value) {
-                  setState(() {
-                    _isEmptyInput = value.isEmpty;
-                  });
-                },
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Text(
-                      'Devices',
-                      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+              Padding(
+                padding: EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Text(
+                        'Devices',
+                        style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                      ),
+                    ),
+                    Expanded(
+                      child: Divider(
+                        thickness: 0.5,
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: room.hardware.length,
+                itemBuilder: (BuildContext context, int i) {
+                  return DeviceBox(
+                    title: hardware[i].name,
+                    iconPath: hardware[i].image_url,
+                    backgroundColor: Theme.of(context).colorScheme.surface,
+                    borderColor: Theme.of(context).colorScheme.primary,
+                    titleColor: Theme.of(context).colorScheme.secondary,
+                    detailColor: Theme.of(context).colorScheme.primary,
+                    iconColor: Theme.of(context).colorScheme.primary,
+                    onDeviceSetting: () {
+                      Navigator.pushNamed(
+                        context,
+                        DeviceSetting.route_name,
+                        arguments: Hardware_2_Room(hardware: hardware[i], room: room),
+                      );
+                    },
+                  );
+                }
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.tertiary,
+                    foregroundColor: Theme.of(context).colorScheme.primary,
+                    minimumSize: Size.fromHeight(75),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2)
                     ),
                   ),
-                  Expanded(
-                    child: Divider(
-                      thickness: 0.5,
-                      color: Theme.of(context).colorScheme.secondary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: room.devices.length,
-              itemBuilder: (BuildContext context, int i) {
-                return DeviceBox(
-                  title: devices[i].name,
-                  iconPath: devices[i].image_url,
-                  backgroundColor: Theme.of(context).colorScheme.surface,
-                  borderColor: Theme.of(context).colorScheme.primary,
-                  titleColor: Theme.of(context).colorScheme.secondary,
-                  detailColor: Theme.of(context).colorScheme.primary,
-                  iconColor: Theme.of(context).colorScheme.primary,
-                  onDeviceSetting: () {
+                  onPressed: () {
                     Navigator.pushNamed(
                       context,
-                      DeviceSetting.route_name,
-                      arguments: Device_2_Room(device: devices[i], room: room),
+                      DeviceScan.route_name,
+                      arguments: room,
                     );
                   },
-                );
-              }
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.tertiary,
-                  foregroundColor: Theme.of(context).colorScheme.primary,
-                  minimumSize: Size.fromHeight(75),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                      side: BorderSide(color: Theme.of(context).colorScheme.primary, width: 2)
+                  child: Icon(
+                      Icons.qr_code_scanner
                   ),
                 ),
-                onPressed: () {
-                  Navigator.pushNamed(
-                    context,
-                    DeviceManagement.route_name,
-                    arguments: room,
-                  );
-                },
-                child: Icon(
-                    Icons.more_horiz
-                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

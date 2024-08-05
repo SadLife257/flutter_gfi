@@ -10,6 +10,7 @@ import 'package:gfi/layers/presentation/pages/Profile.dart';
 import 'package:gfi/layers/presentation/pages/Setting.dart';
 import 'package:gfi/layers/presentation/pages/device/DeviceAddPassword.dart';
 import 'package:gfi/layers/presentation/pages/device/DeviceManagement.dart';
+import 'package:gfi/layers/presentation/pages/device/DeviceScan.dart';
 import 'package:gfi/layers/presentation/pages/device/DeviceSetting.dart';
 import 'package:gfi/layers/presentation/pages/notification/Notification.dart';
 import 'package:gfi/layers/presentation/pages/notification/NotificationDetail.dart';
@@ -45,6 +46,7 @@ class MyApp extends StatelessWidget {
         Notifications.route_name: (context) => Notifications(),
         RoomManagement.route_name: (context) => RoomManagement(),
         RoomCreate.route_name: (context) => RoomCreate(),
+        DeviceScan.route_name: (context) => DeviceScan(),
         DeviceManagement.route_name: (context) => DeviceManagement(),
         DeviceAddPassword.route_name: (context) => DeviceAddPassword(),
         DeviceSetting.route_name: (context) => DeviceSetting(),

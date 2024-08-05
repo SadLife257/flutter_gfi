@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:gfi/layers/domain/entities/Device.dart';
+import 'package:gfi/layers/domain/entities/Device/Hardware.dart';
 
 class Room {
   String name;
-  Map<String, Device> devices;
+  Map<String, Hardware> hardware;
   DateTime? timestamp;
 
-  Room({required this.name, required this.devices, this.timestamp});
+  Room({required this.name, required this.hardware, this.timestamp});
 
   factory Room.fromJson(
       DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -14,16 +14,16 @@ class Room {
       ) {
     final data = snapshot.data();
     return Room(
-        name: data?['name'],
-        devices: data?['devices'],
-        timestamp: data?['timestamp'],
+      name: data?['name'],
+      hardware: data?['hardware'],
+      timestamp: data?['timestamp'],
     );
   }
 
   Map<String,dynamic> toJson(){
     return {
       "name": name,
-      "devices": devices.map((k, v) => MapEntry(k, v.toJson())),
+      "hardware": hardware.map((k, v) => MapEntry(k, v.toJson())),
       "timestamp": timestamp,
     };
   }

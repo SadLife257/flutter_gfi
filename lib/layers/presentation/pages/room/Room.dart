@@ -1,9 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:gfi/layers/data/data_source/remote/BlynkHTTPService.dart';
 import 'package:gfi/layers/domain/entities/Device.dart';
+import 'package:gfi/layers/domain/entities/Device/Hardware.dart';
 import 'package:gfi/layers/presentation/pages/room/RoomManagement.dart';
-import 'package:gfi/layers/presentation/widgets/device_switch.dart';
+import 'package:gfi/layers/presentation/widgets/device/device_chart.dart';
+import 'package:gfi/layers/presentation/widgets/device/device_controller.dart';
+import 'package:gfi/layers/presentation/widgets/device/device_scroll_wheel.dart';
+import 'package:gfi/layers/presentation/widgets/device/device_switch.dart';
+import 'package:gfi/layers/presentation/widgets/device/device_variable_box.dart';
 import 'package:gfi/layers/presentation/widgets/room_header_box.dart';
 import 'package:gfi/layers/domain/entities/Room.dart' as RoomData;
 
@@ -25,6 +33,10 @@ class Room extends StatefulWidget {
 
 class _RoomState extends State<Room> {
   late List<Device> devices;
+  late List<Hardware> hardware;
+  int initialItem = 0;
+  bool autoSwitch = false;
+  bool servoSwitch = false;
 
   @override
   void initState() {
@@ -45,11 +57,11 @@ class _RoomState extends State<Room> {
 
   @override
   Widget build(BuildContext context) {
-    devices = widget.room.devices.values.toList();
+    hardware = widget.room.hardware.values.toList();
     return ListView(
       shrinkWrap:true,
       padding: EdgeInsets.symmetric(
-          horizontal: 8
+          horizontal: 4
       ),
       children: [
         RoomHeaderBox(
@@ -65,39 +77,60 @@ class _RoomState extends State<Room> {
           borderColor: Theme.of(context).colorScheme.primary,
           iconColor: Theme.of(context).colorScheme.tertiary,
         ),
-        GridView.builder(
-          physics: NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: devices.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 1 / 1.3,
-              crossAxisSpacing: 15,
-              mainAxisSpacing: 15
+        ListView.builder(
+          padding: EdgeInsets.symmetric(
+            vertical: 16
           ),
-          padding: EdgeInsets.symmetric(vertical: 16),
-          itemBuilder: (context, index) {
-            return DeviceSwitch(
-              deviceName: devices[index].name,
-              iconPath: devices[index].image_url,
-              powerOn: devices[index].actuator.isOn,
-              onChanged: (value) => powerSwitchChanged(value, index),
-              onTap: () async {
-                setState(() {
-                  devices[index].actuator.isOn = !devices[index].actuator.isOn;
-                });
-                final userId = FirebaseAuth.instance.currentUser!.uid;
-
-                await FirebaseFirestore.instance.collection('users_room').doc(userId).update({
-                  '${widget.room.name}.devices.${devices[index].connectionCode}.actuator.is_on': devices[index].actuator.isOn,
-                });
-              },
-              backgroundOnColor: Theme.of(context).colorScheme.primary,
-              backgroundOffColor: Theme.of(context).colorScheme.tertiary,
-              iconOnColor: Theme.of(context).colorScheme.tertiary,
-              iconOffColor: Theme.of(context).colorScheme.secondary,
-              deviceNameOnColor: Theme.of(context).colorScheme.tertiary,
-              deviceNameOffColor: Theme.of(context).colorScheme.secondary,
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemCount: hardware.length,
+          itemBuilder: (BuildContext context, int i) {
+            var blynkService = BlynkHTTPService(token: hardware[i].token);
+            return Padding(
+              padding: EdgeInsets.symmetric(
+                vertical: 8
+              ),
+              child: FutureBuilder(
+                future: blynkService.fetchData(),
+                builder: (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
+                  if(snapshot.hasData) {
+                    return DeviceController(
+                      deviceName: hardware[i].name,
+                      isAutoMode: snapshot.data?['auto'],
+                      autoModeOnChanged: (value) async {
+                        blynkService.updateAutoMode(value);
+                        setState(() {});
+                      },
+                      autoModeOnTap: () {
+                        blynkService.updateAutoMode(!snapshot.data?['auto']);
+                        setState(() {});
+                      },
+                      isServo: snapshot.data?['servo'],
+                      servoOnChanged: (value) {
+                        blynkService.updateServo(value);
+                        setState(() {});
+                      },
+                      servoOnTap: () {
+                        blynkService.updateAutoMode(!snapshot.data?['servo']);
+                        setState(() {});
+                      },
+                      gasDetect: snapshot.data?['mq2'],
+                      gasLimit: snapshot.data?['mq2_threshold'],
+                      relayValue: snapshot.data?['relay'],
+                      relayOnChanged: (value) {
+                        blynkService.updateRelay(value);
+                        setState(() {});
+                      },
+                    );
+                  }
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: Theme.of(context).colorScheme.primary,
+                      backgroundColor: Theme.of(context).colorScheme.surface,
+                    ),
+                  );
+                },
+              ),
             );
           },
         )

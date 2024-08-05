@@ -5,6 +5,7 @@ class CustomNotifyIconButton extends StatelessWidget {
   Color borderColor;
   Color backgroundColor;
   Color iconColor;
+  double borderWidth;
   final IconData iconActive;
   final IconData iconInacctive;
   final void Function() onPressed;
@@ -15,6 +16,7 @@ class CustomNotifyIconButton extends StatelessWidget {
     this.borderColor = Colors.black,
     this.backgroundColor = Colors.white,
     this.iconColor = Colors.black,
+    this.borderWidth = 0.5,
     required this.iconActive,
     required this.iconInacctive,
     required this.onPressed,
@@ -37,7 +39,7 @@ class CustomNotifyIconButton extends StatelessWidget {
       decoration: BoxDecoration(
           border: Border.all(
             color: borderColor,
-            width: 2.0,
+            width: 0.5,
           ),
           color: backgroundColor,
           shape: BoxShape.rectangle,

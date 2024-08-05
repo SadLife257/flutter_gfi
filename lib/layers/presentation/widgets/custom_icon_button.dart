@@ -4,6 +4,7 @@ class CustomIconButton extends StatelessWidget {
   Color borderColor;
   Color backgroundColor;
   Color iconColor;
+  double borderWidth;
   final IconData icon;
   final void Function() onPressed;
 
@@ -12,6 +13,7 @@ class CustomIconButton extends StatelessWidget {
     this.borderColor = Colors.black,
     this.backgroundColor = Colors.white,
     this.iconColor = Colors.black,
+    this.borderWidth = 0.5,
     required this.icon,
     required this.onPressed,
   });
@@ -22,7 +24,7 @@ class CustomIconButton extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border.all(
           color: borderColor,
-          width: 2.0,
+          width: borderWidth,
         ),
         color: backgroundColor,
         shape: BoxShape.rectangle,

@@ -88,83 +88,81 @@ class _EmailVerificationState extends State<EmailVerification> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: SafeArea(
-        child: Scaffold(
-          backgroundColor: Theme.of(context).colorScheme.surface,
-          extendBody: true,
-          resizeToAvoidBottomInset: false,
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsets.all(8),
-                  child: Text(
-                    'Check your email',
-                    style: TextStyle(
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        extendBody: true,
+        resizeToAvoidBottomInset: false,
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Padding(
+                padding: EdgeInsets.all(8),
+                child: Text(
+                  'Check your email',
+                  style: TextStyle(
                       fontSize: 35,
                       fontWeight: FontWeight.bold,
                       color: Theme.of(context).colorScheme.primary
-                    ),
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.all(8),
-                  child: Text(
-                    "We've sent you a verification email",
-                    style: TextStyle(
+              ),
+              Padding(
+                padding: EdgeInsets.all(8),
+                child: Text(
+                  "We've sent you a verification email",
+                  style: TextStyle(
                       color: Theme.of(context).colorScheme.primary
-                    ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        foregroundColor: Theme.of(context).colorScheme.tertiary,
-                        minimumSize: Size.fromHeight(60),
-                        shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(16))
-                        ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      foregroundColor: Theme.of(context).colorScheme.tertiary,
+                      minimumSize: Size.fromHeight(60),
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(16))
                       ),
-                      onPressed: canResendEmail ? sendVerificationEmail : null,
-                      child: Text('RE-SEND EMAIL'),
                     ),
+                    onPressed: canResendEmail ? sendVerificationEmail : null,
+                    child: Text('RE-SEND EMAIL'),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        foregroundColor: Theme.of(context).colorScheme.tertiary,
-                        minimumSize: Size.fromHeight(60),
-                        shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(16))
-                        ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      foregroundColor: Theme.of(context).colorScheme.tertiary,
+                      minimumSize: Size.fromHeight(60),
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(16))
                       ),
-                      onPressed: () {
-                        FirebaseAuth.instance.signOut();
-                      },
-                      child: Text('CANCEL'),
                     ),
+                    onPressed: () {
+                      FirebaseAuth.instance.signOut();
+                    },
+                    child: Text('CANCEL'),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

@@ -33,7 +33,7 @@ class _DeviceAddPasswordState extends State<DeviceAddPassword> {
 
     device.password = devicePasswordController.text.trim();
 
-    room.devices[device.connectionCode] = device;
+    // room.devices[device.connectionCode] = device;
     room.timestamp = DateTime.now();
 
     await FirebaseFirestore.instance.collection('users_room').doc(userId).update({

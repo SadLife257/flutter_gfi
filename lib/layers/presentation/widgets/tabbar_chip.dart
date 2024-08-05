@@ -4,6 +4,7 @@ class TabBarChip extends StatelessWidget {
   Color borderColor;
   Color backgroundColor;
   Color iconColor;
+  double borderWidth;
   final IconData icon;
   final String title;
 
@@ -12,6 +13,7 @@ class TabBarChip extends StatelessWidget {
     this.borderColor = Colors.black,
     this.backgroundColor = Colors.white,
     this.iconColor = Colors.black,
+    this.borderWidth = 0.5,
     required this.icon,
     required this.title,
   });
@@ -19,7 +21,7 @@ class TabBarChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Tab(
-      height: 100,
+      height: 50,
       child: FittedBox(
         fit: BoxFit.scaleDown,
         child: Container(
@@ -27,7 +29,7 @@ class TabBarChip extends StatelessWidget {
           decoration: BoxDecoration(
               border: Border.all(
                 color: borderColor,
-                width: 2.0,
+                width: 0.5,
               ),
               color: backgroundColor,
               shape: BoxShape.rectangle,

@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:gfi/layers/data/data_source/LocationService.dart';
-import 'package:gfi/layers/data/data_source/WeatherService.dart';
+import 'package:gfi/layers/data/data_source/local/LocationService.dart';
+import 'package:gfi/layers/data/data_source/remote/WeatherService.dart';
 import 'package:gfi/layers/domain/entities/Weather.dart';
 import 'package:intl/intl.dart';
 

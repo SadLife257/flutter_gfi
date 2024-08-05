@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gfi/layers/domain/entities/Device.dart';
+import 'package:gfi/layers/domain/entities/Device/Hardware.dart';
 import 'package:gfi/layers/domain/entities/Device_2_Room.dart';
+import 'package:gfi/layers/domain/entities/Hardware_2_Room.dart';
 import 'package:gfi/layers/domain/entities/Room.dart';
 import 'package:gfi/layers/presentation/widgets/info_box.dart';
 
@@ -18,7 +20,7 @@ class DeviceSetting extends StatefulWidget {
 class _DeviceSettingState extends State<DeviceSetting> {
   late final TextEditingController deviceNameController;
   bool _isEmptyInput = true;
-  late Device device;
+  late Hardware hardware;
   late Room room;
 
   @override
@@ -30,7 +32,7 @@ class _DeviceSettingState extends State<DeviceSetting> {
   Future<void> deleteDevice() async {
     final userId = FirebaseAuth.instance.currentUser!.uid;
 
-    room.devices.removeWhere((key, value) => value == device);
+    room.hardware.removeWhere((key, value) => value == hardware);
     room.timestamp = DateTime.now();
 
     await FirebaseFirestore.instance.collection('users_room').doc(userId).update({
@@ -72,11 +74,17 @@ class _DeviceSettingState extends State<DeviceSetting> {
   }
 
   @override
+  void dispose() {
+    deviceNameController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final Device_2_Room arg = ModalRoute.of(context)!.settings.arguments as Device_2_Room;
+    final Hardware_2_Room arg = ModalRoute.of(context)!.settings.arguments as Hardware_2_Room;
     room = arg.room;
-    device = arg.device;
-    deviceNameController.text = device.name;
+    hardware = arg.hardware;
+    deviceNameController.text = hardware.name;
 
     return SafeArea(
       child: Scaffold(
@@ -183,16 +191,16 @@ class _DeviceSettingState extends State<DeviceSetting> {
                 ],
               ),
             ),
-            InfoBox(
-              title: 'Data',
-              detail: '${device.sensor.value.round().toString()} / ${device.sensor.threshold.round().toString()}',
-              backgroundColor: Theme.of(context).colorScheme.surface,
-              borderColor: Theme.of(context).colorScheme.primary,
-              titleColor: Theme.of(context).colorScheme.secondary,
-              detailColor: Theme.of(context).colorScheme.primary,
-              iconColor: Theme.of(context).colorScheme.primary,
-              isChangeable: false,
-            ),
+            // InfoBox(
+            //   title: 'Gas Detection',
+            //   detail: '${device.sensor.value.round().toString()} / ${device.sensor.threshold.round().toString()}',
+            //   backgroundColor: Theme.of(context).colorScheme.surface,
+            //   borderColor: Theme.of(context).colorScheme.primary,
+            //   titleColor: Theme.of(context).colorScheme.secondary,
+            //   detailColor: Theme.of(context).colorScheme.primary,
+            //   iconColor: Theme.of(context).colorScheme.primary,
+            //   isChangeable: false,
+            // ),
             Padding(
               padding: EdgeInsets.fromLTRB(16, 32, 16, 8),
               child: Row(
@@ -213,26 +221,26 @@ class _DeviceSettingState extends State<DeviceSetting> {
                 ],
               ),
             ),
-            InfoBox(
-              title: 'Mode',
-              detail: '${device.actuator.mode ? 'auto' : 'manual'}',
-              backgroundColor: Theme.of(context).colorScheme.surface,
-              borderColor: Theme.of(context).colorScheme.primary,
-              titleColor: Theme.of(context).colorScheme.secondary,
-              detailColor: Theme.of(context).colorScheme.primary,
-              iconColor: Theme.of(context).colorScheme.primary,
-              isChangeable: false,
-            ),
-            InfoBox(
-              title: 'State',
-              detail: '${device.actuator.isOn ? 'on' : 'off'}',
-              backgroundColor: Theme.of(context).colorScheme.surface,
-              borderColor: Theme.of(context).colorScheme.primary,
-              titleColor: Theme.of(context).colorScheme.secondary,
-              detailColor: Theme.of(context).colorScheme.primary,
-              iconColor: Theme.of(context).colorScheme.primary,
-              isChangeable: false,
-            ),
+            // InfoBox(
+            //   title: 'Mode',
+            //   detail: '${device.actuator.mode ? 'auto' : 'manual'}',
+            //   backgroundColor: Theme.of(context).colorScheme.surface,
+            //   borderColor: Theme.of(context).colorScheme.primary,
+            //   titleColor: Theme.of(context).colorScheme.secondary,
+            //   detailColor: Theme.of(context).colorScheme.primary,
+            //   iconColor: Theme.of(context).colorScheme.primary,
+            //   isChangeable: false,
+            // ),
+            // InfoBox(
+            //   title: 'State',
+            //   detail: '${device.actuator.isOn ? 'on' : 'off'}',
+            //   backgroundColor: Theme.of(context).colorScheme.surface,
+            //   borderColor: Theme.of(context).colorScheme.primary,
+            //   titleColor: Theme.of(context).colorScheme.secondary,
+            //   detailColor: Theme.of(context).colorScheme.primary,
+            //   iconColor: Theme.of(context).colorScheme.primary,
+            //   isChangeable: false,
+            // ),
             Padding(
               padding: EdgeInsets.all(16),
               child: Container(

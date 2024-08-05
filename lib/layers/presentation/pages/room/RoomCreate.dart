@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -25,18 +27,26 @@ class _RoomCreateState extends State<RoomCreate> {
     return formatter.format(DateTime.now());
   }
 
+  String generateRandomString(int len) {
+    var r = Random();
+    const _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+    return List.generate(len, (index) => _chars[r.nextInt(_chars.length)]).join();
+  }
+
   Future<void> createRoom() async {
     final userId = FirebaseAuth.instance.currentUser!.uid;
 
     newRoom = Room(
       name: roomNameController.text.trim(),
       timestamp: DateTime.now(),
-      devices: {}
+      hardware: {}
     );
 
     await FirebaseFirestore.instance.collection('users_room').doc(userId).update({
       newRoom.name: newRoom.toJson()
     });
+
+    // await FirebaseFirestore.instance.collection('users_info').doc(userId).collection('room').add(newRoom.toJson());
   }
 
   @override

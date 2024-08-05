@@ -31,90 +31,47 @@ class RoomHeaderBox extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(15))
       ),
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: EdgeInsets.all(8),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  title,
+                  style: TextStyle(fontSize: 25, color: Theme.of(context).colorScheme.tertiary, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 50,
+              child: VerticalDivider(
+                thickness: 2,
+                color: Theme.of(context).colorScheme.tertiary,
+              ),
+            ),
+            Expanded(
               child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      title,
-                      style: TextStyle(fontSize: 25, color: Theme.of(context).colorScheme.tertiary, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10),
-                    child: Divider(
-                      thickness: 2,
+                  Text('Manage Room', style: TextStyle(
+                      color: Theme.of(context).colorScheme.tertiary
+                  ),),
+                  Container(
+                    decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.tertiary,
+                      borderRadius: BorderRadius.circular(50),
                     ),
-                  ),
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text('Room Temperature', style: TextStyle(
-                                color: Theme.of(context).colorScheme.tertiary
-                            ),),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  'assets/images/thermometer.png',
-                                  height: 50,
-                                  color: Theme.of(context).colorScheme.tertiary,
-                                ),
-                                Text(
-                                  '26°C',
-                                  style: TextStyle(fontSize: 30, color: Theme.of(context).colorScheme.tertiary),
-                                )
-                              ],
-                            ),
-                          ],
-                        ),
+                    child: IconButton(
+                      onPressed: onRoomManage,
+                      icon: Icon(Icons.home_outlined),
+                      style: IconButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        foregroundColor: Theme.of(context).colorScheme.tertiary,
                       ),
-                      SizedBox(
-                        height: 50,
-                        child: VerticalDivider(
-                          thickness: 2,
-                          color: Theme.of(context).colorScheme.tertiary,
-                        ),
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text('Manage Room', style: TextStyle(
-                                color: Theme.of(context).colorScheme.tertiary
-                            ),),
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.tertiary,
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                              child: IconButton(
-                                onPressed: onRoomManage,
-                                icon: Icon(Icons.home_outlined),
-                                style: IconButton.styleFrom(
-                                  backgroundColor: Theme.of(context).colorScheme.primary,
-                                  foregroundColor: Theme.of(context).colorScheme.tertiary,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ],
               ),
