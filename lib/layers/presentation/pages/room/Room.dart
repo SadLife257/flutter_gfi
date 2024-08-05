@@ -95,28 +95,33 @@ class _RoomState extends State<Room> {
                       },
                       isAutoMode: snapshot.data?['auto'],
                       autoModeOnChanged: (value) async {
-                        blynkService.updateAutoMode(value);
-                        setState(() {});
+                        blynkService.updateAutoMode(value).then((_) {
+                          setState(() {});
+                        });
                       },
                       autoModeOnTap: () {
-                        blynkService.updateAutoMode(!snapshot.data?['auto']);
-                        setState(() {});
+                        blynkService.updateAutoMode(!snapshot.data?['auto']).then((_) {
+                          setState(() {});
+                        });
                       },
                       isServo: snapshot.data?['servo'],
                       servoOnChanged: (value) {
-                        blynkService.updateServo(value);
-                        setState(() {});
+                        blynkService.updateServo(value).then((_) {
+                          setState(() {});
+                        });
                       },
                       servoOnTap: () {
-                        blynkService.updateAutoMode(!snapshot.data?['servo']);
-                        setState(() {});
+                        blynkService.updateServo(!snapshot.data?['servo']).then((_) {
+                          setState(() {});
+                        });
                       },
                       gasDetect: snapshot.data?['mq2'],
                       gasLimit: snapshot.data?['mq2_threshold'],
                       relayValue: snapshot.data?['relay'],
                       relayOnChanged: (value) {
-                        blynkService.updateRelay(value);
-                        setState(() {});
+                        blynkService.updateRelay(value).then((_) {
+                          setState(() {});
+                        });
                       },
                     );
                   }

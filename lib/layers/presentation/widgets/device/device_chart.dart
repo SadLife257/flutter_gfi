@@ -194,8 +194,7 @@ class _DeviceChartState extends State<DeviceChart> {
         // ),
       ),
       borderData: FlBorderData(
-        show: true,
-        border: Border.all(color: widget.mainGridColor),
+        show: false,
       ),
       minX: widget.min_x,
       maxX: widget.max_x,
