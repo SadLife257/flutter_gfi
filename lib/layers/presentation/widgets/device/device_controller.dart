@@ -8,7 +8,9 @@ import 'package:gfi/layers/presentation/widgets/device/device_variable_box.dart'
 
 class DeviceController extends StatelessWidget {
 
+  final bool isDeviceOnline;
   final String deviceName;
+  final Function() deviceEdit;
 
   final bool isAutoMode;
   final Function(bool) autoModeOnChanged;
@@ -28,7 +30,9 @@ class DeviceController extends StatelessWidget {
 
   DeviceController({
     super.key,
+    required this.isDeviceOnline,
     required this.deviceName,
+    required this.deviceEdit,
     required this.isAutoMode,
     required this.autoModeOnChanged,
     required this.autoModeOnTap,
@@ -69,7 +73,35 @@ class DeviceController extends StatelessWidget {
                     borderRadius: BorderRadius.circular(15),
                     border: Border.all(color: Theme.of(context).colorScheme.primary, width: borderWidth),
                   ),
-                  child: Center(child: Text(deviceName)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.circle,
+                            color: isDeviceOnline ? Colors.green : Colors.red,
+                            size: 10,
+                          ),
+                          Text(
+                            isDeviceOnline ? 'Online' : 'Offline',
+                            style: TextStyle(
+                              fontSize: 8,
+                              color: isDeviceOnline ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.secondary
+                            ),
+                          ),
+                        ],
+                      ),
+                      Text(
+                          deviceName
+                      ),
+                      IconButton(
+                        onPressed: deviceEdit,
+                        icon: Icon(Icons.edit),
+                      )
+                    ],
+                  ),
                 ),
               ),
               StaggeredGridTile.count(

@@ -6,6 +6,8 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:gfi/layers/data/data_source/remote/BlynkHTTPService.dart';
 import 'package:gfi/layers/domain/entities/Device.dart';
 import 'package:gfi/layers/domain/entities/Device/Hardware.dart';
+import 'package:gfi/layers/domain/entities/Hardware_2_Room.dart';
+import 'package:gfi/layers/presentation/pages/device/DeviceSetting.dart';
 import 'package:gfi/layers/presentation/pages/room/RoomManagement.dart';
 import 'package:gfi/layers/presentation/widgets/device/device_chart.dart';
 import 'package:gfi/layers/presentation/widgets/device/device_controller.dart';
@@ -32,7 +34,6 @@ class Room extends StatefulWidget {
 }
 
 class _RoomState extends State<Room> {
-  late List<Device> devices;
   late List<Hardware> hardware;
   int initialItem = 0;
   bool autoSwitch = false;
@@ -41,18 +42,6 @@ class _RoomState extends State<Room> {
   @override
   void initState() {
     super.initState();
-  }
-
-  void powerSwitchChanged(bool value, int index) async{
-    setState(() {
-      devices[index].actuator.isOn = value;
-    });
-
-    final userId = FirebaseAuth.instance.currentUser!.uid;
-
-    await FirebaseFirestore.instance.collection('users_room').doc(userId).update({
-      '${widget.room.name}.devices.${devices[index].connectionCode}.actuator.is_on': value,
-    });
   }
 
   @override
@@ -95,7 +84,15 @@ class _RoomState extends State<Room> {
                 builder: (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
                   if(snapshot.hasData) {
                     return DeviceController(
+                      isDeviceOnline: snapshot.data?['device_status'],
                       deviceName: hardware[i].name,
+                      deviceEdit: () {
+                        // Navigator.pushNamed(
+                        //   context,
+                        //   DeviceSetting.route_name,
+                        //   arguments: Hardware_2_Room(hardware: hardware[i], room: room),
+                        // );
+                      },
                       isAutoMode: snapshot.data?['auto'],
                       autoModeOnChanged: (value) async {
                         blynkService.updateAutoMode(value);

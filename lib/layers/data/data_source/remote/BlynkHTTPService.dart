@@ -15,6 +15,7 @@ class BlynkHTTPService {
 
   Future<Map<String, dynamic>> fetchData() async {
     final data = await Future.wait([
+      isDeviceOnline(),
       fetchMQ2(),
       fetchRelay(),
       fetchServo(),
@@ -23,14 +24,24 @@ class BlynkHTTPService {
     ]);
 
     Map<String, dynamic> result = {
-      'mq2': jsonDecode(data[0].body) as int,
-      'relay': jsonDecode(data[1].body) as int,
-      'servo': jsonDecode(data[2].body) as int == 1,
-      'mq2_threshold': jsonDecode(data[3].body) as int,
-      'auto': jsonDecode(data[4].body) as int == 1,
+      'device_status': jsonDecode(data[0].body) as bool,
+      'mq2': jsonDecode(data[1].body) as int,
+      'relay': jsonDecode(data[2].body) as int,
+      'servo': jsonDecode(data[3].body) as int == 1,
+      'mq2_threshold': jsonDecode(data[4].body) as int,
+      'auto': jsonDecode(data[5].body) as int == 1,
     };
 
     return result;
+  }
+
+  Future<http.Response> isDeviceOnline() {
+    return http.get(
+      Uri.parse('$URL/isHardwareConnected?token=$token'),
+      headers: <String, String> {
+        HttpHeaders.contentTypeHeader: HEADER_TYPE,
+      },
+    );
   }
 
   //MQ2
