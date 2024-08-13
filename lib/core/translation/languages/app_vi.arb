@@ -1,0 +1,175 @@
+{
+    "language": "Tiếng Việt",
+    "language_code": "vi",
+
+    "confirm": "Đồng ý",
+    "confirm_required": "Xin hãy xác nhận",
+    "confirm_cap": "ĐỒNG Ý",
+    "cancel": "Hủy",
+    "cancel_cap": "HỦY",
+    "save": "Lưu",
+    "save_cap": "LƯU",
+    "send": "Gửi",
+    "send_cap": "GỬI",
+    "resend": "Gửi lại",
+    "resend_cap": "GỬI LẠI",
+    "delete": "Xóa",
+    "delete_cap": "XÓA",
+    "next": "Tiếp theo",
+    "next_cap": "TIẾP THEO",
+    "skip": "Bỏ qua",
+    "skip_cap": "BỎ QUA",
+    "finish": "Hoàn tất",
+    "finish_cap": "HOÀN TẤT",
+    "upload": "Chọn ảnh",
+    "upload_cap": "CHỌN ẢNH",
+    "welcome": "Chào mừng",
+    "welcome_home": "Chào bạn \n{name}",
+    "@welcome_home": {
+        "placeholder": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "welcome_cap": "CHÀO MỪNG",
+    "login": "Đăng nhập",
+    "login_cap": "ĐĂNG NHẬP",
+    "logout": "Đăng xuất",
+    "logout_cap": "ĐĂNG XUẤT",
+    "register": "Đăng ký",
+    "register_cap": "ĐĂNG KÝ",
+    "setting": "Cài đặt",
+    "setting_cap": "CÀI ĐẶT",
+
+    "username": "Tên người dùng",
+    "firstname": "Tên",
+    "firstname_hint": "Nhập tên của bạn",
+    "firstname_error_empty": "Xin nhập tên của bạn",
+    "lastname": "Họ và tên lót",
+    "lastname_hint": "Nhập họ và tên lót của bạn",
+    "lastname_error_empty": "Xin nhập họ và tên lót của bạn",
+    "confirm_password": "Xác nhận mật khẩu",
+    "confirm_password_hint": "Nhập mật khẩu của bạn lần nữa",
+    "confirm_password_error_empty": "Xin nhập mật khẩu của bạn lần nữa",
+    "password_error_confirm_wrong": "Mật khẩu không chính xác",
+    "email": "Email",
+    "email_hint": "Nhập email của bạn",
+    "email_error_empty": "Xin nhập email của bạn",
+    "password": "Mật khẩu",
+    "password_hint": "Nhập mật khẩu của bạn",
+    "password_error_empty": "Xin nhập mật khẩu của bạn",
+
+    "forgot_pass": "Quên mật khẩu?",
+    "login_alternative": "Hoặc đăng nhập bằng",
+    "not_member": "Không có tài khoản",
+    "join_us": "Tạo tài khoản",
+    "already_have_account": "Đã có tài khoản!",
+    "login_now": "Đăng nhập ngay",
+    "check_email": "Kiểm tra email của bạn",
+    "check_email_explain": "Email xác nhận đã được gửi cho bạn",
+
+    "empty_home": "Bạn chưa kết nối đến thiết bị nào",
+    "empty_home_explain": "Hãy bắt đầu tạo phòng và kết nối thiết bị!!!",
+
+    "reset_pass": "Thay đổi mật khẩu",
+    "reset_pass_explain": "Hãy nhập email và chúng tôi sẽ gửi link thay đổi mật khẩu cho bạn",
+    "reset_pass_success": "Chúng tôi đã gửi link thay đổi mật khẩu cho bạn",
+    "reset_pass_fail": "Email này chưa được dùng để đăng ký",
+
+    "device": "Thiết bị",
+    "devices": "Thiết bị",
+
+    "device_scan": "Quét mã thiết bị",
+    "device_scan_wrong": "Sai mã QR",
+    "device_scan_wrong_explain": "Bạn đã quét sai mã QR để kết nối với thiết bị này",
+
+    "device_setting": "Cài đặt thiết bị",
+    "device_name_label": "Tên thiết bị",
+    "device_delete_name": "Xóa {device_name}",
+    "@device_delete_name": {
+        "placeholder": {
+            "device_name": {
+                "type": "String"
+            }
+        }
+    },
+
+    "notification": "Thông báo",
+    "notification_permission": "Xin hãy cho phép chúng tôi gửi thông báo cho bạn",
+
+    "room": "Phòng",
+    "rooms": "Phòng",
+
+    "room_add_explain": "Thêm phòng mới",
+    "room_name": "Tên phòng",
+    "room_name_hint": "Tên phòng",
+    "room_name_error_empty": "Xin nhập tên phòng của bạn",
+
+    "room_management": "Quản lý phòng",
+    "room_delete_name": "Xóa {room_name}",
+    "@room_delete_name": {
+        "placeholder": {
+            "room_name": {
+                "type": "String"
+            }
+        }
+    },
+
+    "profile": "Tài khoản",
+    "profile_info": "Thông tin tài khoản",
+    "profile_operation": "Hỗ trợ",
+    "profile_img_pick_fail": "Chọn hình ảnh không thành công!",
+    "profile_img_upload_success": "Thay đổi ảnh thành công!",
+    "profile_img_upload_fail": "Thay đổi ảnh thất bại!",
+
+    "manage_home": "Quản lý nhà",
+    "add_room": "Thêm phòng",
+    "manage_app": "Quản lý thiết bị",
+
+    "threshold": "ngưỡng cho phép",
+    "online": "Online",
+    "offline": "Offline",
+    "on": "Bật",
+    "off": "Tắt",
+    "auto": "Auto",
+    "servo": "Servo",
+    "gas": "Gas",
+    "relay": "Relay",
+
+    "setting_language": "{locale, select, en {English} vi {Tiếng Việt} other {-}}",
+    "@setting_language": {
+      "placeholders": {
+        "locale": {
+          "type": "String"
+        }
+      }
+    },
+
+    "setting_theme": "{locale, select, dark {Chế độ tối} light {Chế độ sáng} other {-}}",
+    "@setting_theme": {
+      "placeholders": {
+        "locale": {
+          "type": "String"
+        }
+      }
+    },
+
+    "onboard_detail":"1|Chào mừng|Hãy cùng xem qua cách để bảo vệ ngôi nhà của bạn khỏi cháy và ngộ độc khí ga nhé.#2|Kết nối thiết bị|Đầu tiên, tạo phòng và kết nối với thiết bị qua mã kết nối#3|Nhận thông báo|Khi thiết bị phát hiện lượng khí ga lớn, chúng tôi sẽ gửi thông báo cho bạn#4|Điều khiển từ xa|Bạn có thể tắt van ga từ xa thông qua điện thoại#5|Xong rồi|Chỉ đơn giản vậy thôi, cảm ơn bạn đã chọn sản phẩm của chúng tôi.",
+
+    "about_us": "Về chúng tôi",
+    "about_us_cap": "VỀ CHÚNG TÔI",
+    "about_us_explain": "GFI - Gas and Fire Intelligence là Dự án Công nghệ thông tin của nhóm chúng tôi nhằm cải thiện an toàn cháy nổ cho gia đình và doanh nghiệp bằng cách cung cấp thông tin chi tiết về nhiệt độ, nồng độ khí, v.v., ... từ xa thông qua thiết bị của họ.",
+    "this_project": "Về dự án này",
+    "this_project_explain": "Ứng dụng này là một phần trong dự án của chúng tôi sử dụng các nền tảng như Android và iOS để cung cấp dịch vụ của chúng tôi cho các thiết bị cầm tay hướng tới các thành viên trong gia đình.",
+    "our_team": "Nhóm chúng tôi",
+    "our_team_introduction": "Nhóm của chúng tôi gồm có hai thành viên Lâm Quốc Huy, chuyên ngành Khoa học máy tính tại Đại học Tôn Đức Thắng và Nguyễn Lê Gia Bảo, chuyên ngành Kỹ thuật phần mềm tại Đại học Tôn Đức Thắng.",
+    "team_member_name_Huy": "Lâm Quốc Huy",
+    "team_member_university_email_Huy": "52000216@student.tdtu.edu.vn",
+    "team_member_major_Huy": "Khoa học máy tính",
+    "team_member_university_Huy": "Đại học Tôn Đức Thắng",
+    "team_member_name_Bao": "Nguyễn Lê Gia Bảo",
+    "team_member_university_email_Bao": "52000632@student.tdtu.edu.vn",
+    "team_member_major_Bao": "Kỹ thuật phần mềm",
+    "team_member_university_Bao": "Đại học Tôn Đức Thắng"
+}

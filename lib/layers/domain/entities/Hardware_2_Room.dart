@@ -1,4 +1,3 @@
-import 'package:gfi/layers/domain/entities/Device.dart';
 import 'package:gfi/layers/domain/entities/Device/Hardware.dart';
 import 'package:gfi/layers/domain/entities/Room.dart';
 

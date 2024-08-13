@@ -7,6 +7,7 @@ class DeviceScrollWheel extends StatelessWidget {
   final List<int> relay_list;
   final Function(int)? onSelectedItemChanged;
   double borderWidth;
+  double borderRadius;
 
   DeviceScrollWheel({
     super.key,
@@ -15,13 +16,14 @@ class DeviceScrollWheel extends StatelessWidget {
     required this.relay_list,
     required this.onSelectedItemChanged,
     this.borderWidth = 0.5,
+    this.borderRadius = 15,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
         border: Border.all(color: Theme.of(context).colorScheme.primary, width: borderWidth),
       ),
       child: Column(

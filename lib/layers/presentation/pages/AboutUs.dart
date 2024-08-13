@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class AboutUs extends StatefulWidget {
   const AboutUs({super.key});
@@ -20,7 +21,7 @@ class _AboutUsState extends State<AboutUs> {
           backgroundColor: Theme.of(context).colorScheme.surface,
           centerTitle: true,
           title: Text(
-            'About Us',
+            AppLocalizations.of(context)!.about_us,
             style: TextStyle(
                 color: Theme.of(context).colorScheme.primary,
                 fontWeight: FontWeight.bold
@@ -45,7 +46,7 @@ class _AboutUsState extends State<AboutUs> {
                 vertical: 25,
               ),
               child: Text(
-                'GFI - Gas and Fire Intelligence is our team Infomation Technology Project to improve fire safety for family and businesses by offering an insight into their temperature, gas concentration, etc, ... remotely through their devices.',
+                AppLocalizations.of(context)!.about_us_explain,
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.primary,
                   fontSize: 15,
@@ -66,7 +67,7 @@ class _AboutUsState extends State<AboutUs> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Text(
-                      'This Project',
+                        AppLocalizations.of(context)!.this_project,
                       style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                     ),
                   ),
@@ -85,7 +86,7 @@ class _AboutUsState extends State<AboutUs> {
                 vertical: 25,
               ),
               child: Text(
-                'This app is a part of our project which uses platforms like Android and iOS to provide our service to hand-held devices aiming for family members.',
+                AppLocalizations.of(context)!.this_project_explain,
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.primary,
                   fontSize: 15,
@@ -106,7 +107,7 @@ class _AboutUsState extends State<AboutUs> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Text(
-                      'Our Team',
+                      AppLocalizations.of(context)!.our_team,
                       style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                     ),
                   ),
@@ -135,7 +136,7 @@ class _AboutUsState extends State<AboutUs> {
                       Padding(
                         padding: EdgeInsets.only(top: 2),
                         child: Text(
-                          'Lâm Quốc Huy',
+                          AppLocalizations.of(context)!.team_member_name_Huy,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.primary,
@@ -147,7 +148,7 @@ class _AboutUsState extends State<AboutUs> {
                       Padding(
                         padding: EdgeInsets.only(top: 2),
                         child: Text(
-                          '52000216@student.tdtu.edu.vn',
+                          AppLocalizations.of(context)!.team_member_university_email_Huy,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.primary,
@@ -158,7 +159,7 @@ class _AboutUsState extends State<AboutUs> {
                       Padding(
                         padding: EdgeInsets.only(top: 2),
                         child: Text(
-                          'Computer Science',
+                          AppLocalizations.of(context)!.team_member_major_Huy,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.primary,
@@ -169,7 +170,7 @@ class _AboutUsState extends State<AboutUs> {
                       Padding(
                         padding: EdgeInsets.only(top: 2),
                         child: Text(
-                          'Tôn Đức Thắng University',
+                          AppLocalizations.of(context)!.team_member_university_Huy,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.primary,
@@ -194,7 +195,7 @@ class _AboutUsState extends State<AboutUs> {
                       Padding(
                         padding: EdgeInsets.only(top: 2),
                         child: Text(
-                          'Nguyễn Lê Gia Bảo',
+                          AppLocalizations.of(context)!.team_member_name_Bao,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.primary,
@@ -206,7 +207,7 @@ class _AboutUsState extends State<AboutUs> {
                       Padding(
                         padding: EdgeInsets.only(top: 2),
                         child: Text(
-                          '52000632@student.tdtu.edu.vn',
+                          AppLocalizations.of(context)!.team_member_university_email_Bao,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.primary,
@@ -217,7 +218,7 @@ class _AboutUsState extends State<AboutUs> {
                       Padding(
                         padding: EdgeInsets.only(top: 2),
                         child: Text(
-                          'Software Technology',
+                          AppLocalizations.of(context)!.team_member_major_Bao,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.primary,
@@ -228,7 +229,7 @@ class _AboutUsState extends State<AboutUs> {
                       Padding(
                         padding: EdgeInsets.only(top: 2),
                         child: Text(
-                          'Tôn Đức Thắng University',
+                          AppLocalizations.of(context)!.team_member_university_Bao,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.primary,
@@ -248,7 +249,7 @@ class _AboutUsState extends State<AboutUs> {
                 vertical: 25,
               ),
               child: Text(
-                'Our team consists of two members Lâm Quốc Huy, majoring in Computer Science at Tôn Đức Thắng University, and Nguyễn Lê Gia Bảo, majoring in Software Technology at Tôn Đức Thắng University. ',
+                AppLocalizations.of(context)!.our_team_introduction,
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.primary,
                   fontSize: 15,

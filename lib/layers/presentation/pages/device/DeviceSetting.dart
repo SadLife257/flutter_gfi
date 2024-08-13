@@ -1,12 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:gfi/layers/domain/entities/Device.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:gfi/layers/domain/entities/Device/Hardware.dart';
-import 'package:gfi/layers/domain/entities/Device_2_Room.dart';
 import 'package:gfi/layers/domain/entities/Hardware_2_Room.dart';
 import 'package:gfi/layers/domain/entities/Room.dart';
-import 'package:gfi/layers/presentation/widgets/info_box.dart';
 
 class DeviceSetting extends StatefulWidget {
   const DeviceSetting({super.key});
@@ -44,8 +42,8 @@ class _DeviceSettingState extends State<DeviceSetting> {
     showDialog<String>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        title: Text('Delete ${deviceNameController.text.trim()}'),
-        content: Text('Please confirm'),
+        title: Text(AppLocalizations.of(context)!.device_delete_name(deviceNameController.text.trim())),
+        content: Text(AppLocalizations.of(context)!.confirm_required),
         backgroundColor: Theme.of(context).colorScheme.surface,
         actions: <Widget>[
           TextButton(
@@ -53,8 +51,8 @@ class _DeviceSettingState extends State<DeviceSetting> {
               backgroundColor: Theme.of(context).colorScheme.primary,
               foregroundColor: Theme.of(context).colorScheme.tertiary,
             ),
-            onPressed: () => Navigator.pop(context, 'Cancel'),
-            child: const Text('Cancel'),
+            onPressed: () => Navigator.pop(context, AppLocalizations.of(context)!.cancel),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           TextButton(
             style: TextButton.styleFrom(
@@ -66,7 +64,7 @@ class _DeviceSettingState extends State<DeviceSetting> {
                 Navigator.popUntil(context, ModalRoute.withName('/'));
               });
             },
-            child: const Text('Confirm'),
+            child: Text(AppLocalizations.of(context)!.confirm),
           ),
         ],
       ),
@@ -92,7 +90,7 @@ class _DeviceSettingState extends State<DeviceSetting> {
           backgroundColor: Theme.of(context).colorScheme.surface,
           centerTitle: true,
           title: Text(
-            'Device Setting',
+            AppLocalizations.of(context)!.device_setting,
             style: TextStyle(
                 color: Theme.of(context).colorScheme.primary,
                 fontWeight: FontWeight.bold
@@ -119,7 +117,7 @@ class _DeviceSettingState extends State<DeviceSetting> {
                     color: Theme.of(context).colorScheme.primary
                 ),
                 decoration: InputDecoration(
-                    labelText: 'Device Name',
+                    labelText: AppLocalizations.of(context)!.device_name_label,
                     hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
                     labelStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
                     border: OutlineInputBorder(
@@ -160,7 +158,7 @@ class _DeviceSettingState extends State<DeviceSetting> {
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return "Please enter your room name";
+                    return "Please enter your room name"; //AppLocalizations.of(context)!.device_name_wrong_empty
                   }
                   return null;
                 },
@@ -260,7 +258,7 @@ class _DeviceSettingState extends State<DeviceSetting> {
                     color: Theme.of(context).colorScheme.primary,
                   ),
                   label: Text(
-                    'Delete',
+                    AppLocalizations.of(context)!.delete,
                   ),
                 ),
               ),

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:gfi/layers/domain/entities/Device/Hardware.dart';
 import 'package:http/http.dart' as http;
 

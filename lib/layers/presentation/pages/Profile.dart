@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:gfi/layers/domain/entities/UserDetail.dart';
 import 'package:gfi/layers/presentation/pages/AboutUs.dart';
 import 'package:gfi/layers/presentation/pages/AuthReDirect.dart';
@@ -80,7 +81,7 @@ class _ProfileState extends State<Profile> {
         SnackBar(
           backgroundColor: Theme.of(context).colorScheme.primary,
           content: Text(
-            'Pick profile image failed!',
+            AppLocalizations.of(context)!.profile_img_pick_fail,
             style: TextStyle(
               color: Theme.of(context).colorScheme.tertiary,
             ),
@@ -100,7 +101,7 @@ class _ProfileState extends State<Profile> {
             SnackBar(
                 backgroundColor: Theme.of(context).colorScheme.primary,
                 content: Text(
-                  'Upload profile image successful!',
+                  AppLocalizations.of(context)!.profile_img_upload_success,
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.tertiary,
                   ),
@@ -114,7 +115,7 @@ class _ProfileState extends State<Profile> {
           SnackBar(
               backgroundColor: Theme.of(context).colorScheme.primary,
               content: Text(
-                'Upload profile image failed!',
+                AppLocalizations.of(context)!.profile_img_upload_fail,
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.tertiary,
                 ),
@@ -143,7 +144,7 @@ class _ProfileState extends State<Profile> {
           backgroundColor: Theme.of(context).colorScheme.surface,
           centerTitle: true,
           title: Text(
-            'Profile',
+            AppLocalizations.of(context)!.profile,
             style: TextStyle(
                 color: Theme.of(context).colorScheme.primary,
                 fontWeight: FontWeight.bold
@@ -202,7 +203,7 @@ class _ProfileState extends State<Profile> {
                   });
                   pickImage();
                 },
-                label: Text('Upload'),
+                label: Text(AppLocalizations.of(context)!.upload),
                 icon: Icon(Icons.edit),
               ),
             ),
@@ -213,7 +214,7 @@ class _ProfileState extends State<Profile> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Text(
-                      'User Information',
+                        AppLocalizations.of(context)!.profile_info,
                       style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                     ),
                   ),
@@ -227,7 +228,7 @@ class _ProfileState extends State<Profile> {
               ),
             ),
             InfoBox(
-              title: 'Username',
+              title: AppLocalizations.of(context)!.username,
               detail: '${user.firstname} ${user.lastname}',
               backgroundColor: Theme.of(context).colorScheme.surface,
               borderColor: Theme.of(context).colorScheme.primary,
@@ -237,7 +238,7 @@ class _ProfileState extends State<Profile> {
               isChangeable: true,
             ),
             InfoBox(
-              title: 'Email',
+              title: AppLocalizations.of(context)!.email,
               detail: user.email.toString(),
               backgroundColor: Theme.of(context).colorScheme.surface,
               borderColor: Theme.of(context).colorScheme.primary,
@@ -246,7 +247,7 @@ class _ProfileState extends State<Profile> {
               iconColor: Theme.of(context).colorScheme.primary,
             ),
             InfoBox(
-              title: 'Password',
+              title: AppLocalizations.of(context)!.password,
               backgroundColor: Theme.of(context).colorScheme.surface,
               borderColor: Theme.of(context).colorScheme.primary,
               titleColor: Theme.of(context).colorScheme.secondary,
@@ -261,7 +262,7 @@ class _ProfileState extends State<Profile> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Text(
-                      'User Operation',
+                      AppLocalizations.of(context)!.profile_operation,
                       style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                     ),
                   ),
@@ -295,7 +296,7 @@ class _ProfileState extends State<Profile> {
                         MaterialPageRoute(builder: (context) => AboutUs())
                     );
                   },
-                  child: Text('ABOUT US'),
+                  child: Text(AppLocalizations.of(context)!.about_us_cap),
                 ),
               ),
             ),
@@ -316,7 +317,7 @@ class _ProfileState extends State<Profile> {
                       )
                   ),
                   onPressed: signOut,
-                  child: Text('LOGOUT'),
+                  child: Text(AppLocalizations.of(context)!.logout_cap),
                 ),
               ),
             ),

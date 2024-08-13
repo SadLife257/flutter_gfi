@@ -16,6 +16,7 @@ ThemeData lightTheme = ThemeData(
   textSelectionTheme: TextSelectionThemeData(
     cursorColor: Color.fromARGB(255, 12, 12, 12),
   ),
+  fontFamily: 'Exo',
 );
 
 ThemeData darkTheme = ThemeData(
@@ -34,4 +35,5 @@ ThemeData darkTheme = ThemeData(
   textSelectionTheme: TextSelectionThemeData(
     cursorColor: Colors.white,
   ),
+  fontFamily: 'Exo',
 );

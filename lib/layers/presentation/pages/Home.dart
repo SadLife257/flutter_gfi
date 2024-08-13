@@ -3,22 +3,20 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:gfi/layers/domain/entities/Actuator.dart';
-import 'package:gfi/layers/domain/entities/Device.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:gfi/layers/domain/entities/Device/Hardware.dart';
-import 'package:gfi/layers/domain/entities/Sensor.dart';
+import 'package:gfi/layers/domain/entities/Room.dart' as RoomData;
 import 'package:gfi/layers/domain/entities/UserDetail.dart';
-import 'package:gfi/layers/presentation/pages/notification/Notification.dart';
 import 'package:gfi/layers/presentation/pages/Profile.dart';
-import 'package:gfi/layers/presentation/pages/room/Room.dart';
 import 'package:gfi/layers/presentation/pages/Setting.dart';
+import 'package:gfi/layers/presentation/pages/notification/Notification.dart';
+import 'package:gfi/layers/presentation/pages/room/Room.dart';
+import 'package:gfi/layers/presentation/pages/room/RoomCreate.dart';
 import 'package:gfi/layers/presentation/widgets/custom_icon_button.dart';
 import 'package:gfi/layers/presentation/widgets/custom_notify_icon_button.dart';
 import 'package:gfi/layers/presentation/widgets/date_weather_box.dart';
 import 'package:gfi/layers/presentation/widgets/empty_tabview.dart';
 import 'package:gfi/layers/presentation/widgets/tabbar_chip.dart';
-import 'package:intl/intl.dart';
-import 'package:gfi/layers/domain/entities/Room.dart' as RoomData;
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -29,18 +27,13 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> with TickerProviderStateMixin {
   late TabController _tabController;
-  // late Stream<QuerySnapshot> stream;
   late final String userId;
 
-  late UserDetail user;
-  bool isUserLoaded = false;
-  bool isRoomLoaded = false;
+  late final Stream<DocumentSnapshot<Map<String, dynamic>>> _room_stream;
+  late final Stream<DocumentSnapshot<Map<String, dynamic>>> _user_stream;
 
   final double horizontalPadding = 20;
   final double verticalPadding = 15;
-  late final String date;
-  late String time;
-  late Future<List<RoomData.Room>> futureRoom;
   late List<Widget> roomView;
   late List<Widget> tabView;
 
@@ -62,7 +55,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   void initState() {
     selectedTab = 0;
     userId = FirebaseAuth.instance.currentUser!.uid;
-    getUser();
+    _room_stream = FirebaseFirestore.instance.collection('users_room').doc(userId).snapshots();
+    _user_stream = FirebaseFirestore.instance.collection('users_info').doc(userId).snapshots();
     super.initState();
   }
 
@@ -72,16 +66,15 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  Future getUser() async {
-    final ref = FirebaseFirestore.instance.collection('users_info').doc(userId).withConverter(
-      fromFirestore: UserDetail.fromJson,
-      toFirestore: (UserDetail user, _) => user.toJson(),
+  UserDetail getUser(DocumentSnapshot<Map<String, dynamic>> doc) {
+    final data = doc.data() as Map<String, dynamic>;
+    UserDetail user = UserDetail(
+      firstname: data['firstname'],
+      lastname: data['lastname'],
+      email: data['email'],
+      imageUrl: data['image_url'],
     );
-    final docSnap = await ref.get();
-    user = docSnap.data()!;
-    setState(() {
-      isUserLoaded = true;
-    });
+    return user;
   }
 
   List<Widget> getTabBar(List<RoomData.Room> rooms)
@@ -158,179 +151,239 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    // var locale = AppLocalizations.of(context)!;
+    // var theme = Theme.of(context);
+
     return SafeArea(
       child: Scaffold(
         extendBody: true,
         resizeToAvoidBottomInset: false,
         backgroundColor: Theme.of(context).colorScheme.surface,
         appBar: null,
-        body: !(isUserLoaded) ? Center(
-          child: CircularProgressIndicator(
-            color: Theme.of(context).colorScheme.primary,
-            backgroundColor: Theme.of(context).colorScheme.surface,
-          ),
-        )
-        :
-        Column(
-          mainAxisSize:MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: horizontalPadding,
-                vertical: verticalPadding,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CustomIconButton(
-                    icon: Icons.person,
-                    onPressed: () {
-                      Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => Profile())
-                      );
-                    },
-                    backgroundColor: Theme.of(context).colorScheme.surface,
-                    borderColor: Theme.of(context).colorScheme.primary,
-                    iconColor: Theme.of(context).colorScheme.primary,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                          padding: EdgeInsets.only(right: 16),
-                          child: CustomNotifyIconButton(
-                            iconActive: Icons.notifications_active,
-                            iconInacctive: Icons.notifications,
+        body: StreamBuilder(
+          stream: _user_stream,
+          builder: (context, snapshot) {
+            if(snapshot.hasData) {
+              var data = snapshot.data;
+              if(data != null) {
+                UserDetail user = getUser(data);
+                return Column(
+                  mainAxisSize:MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: horizontalPadding,
+                        vertical: verticalPadding,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          CustomIconButton(
+                            icon: Icons.person,
                             onPressed: () {
                               Navigator.of(context).push(
-                                  MaterialPageRoute(builder: (context) => Notifications())
+                                  MaterialPageRoute(builder: (context) => Profile())
                               );
                             },
-                            unreadMessage: countUnread(),
                             backgroundColor: Theme.of(context).colorScheme.surface,
                             borderColor: Theme.of(context).colorScheme.primary,
                             iconColor: Theme.of(context).colorScheme.primary,
-                          )
-                      ),
-                      CustomIconButton(
-                        icon: Icons.more_horiz,
-                        onPressed: () async {
-                          Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) => Setting())
-                          );
-                        },
-                        backgroundColor: Theme.of(context).colorScheme.surface,
-                        borderColor: Theme.of(context).colorScheme.primary,
-                        iconColor: Theme.of(context).colorScheme.primary,
-                      )
-                    ],
-                  )
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Welcome home ${user.firstname}",
-                    style: TextStyle(fontSize: 25, color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  DateWeatherBox(),
-                ],
-              ),
-            ),
-            StreamBuilder(
-              stream: FirebaseFirestore.instance.collection('users_room').doc(userId).snapshots(),
-              builder: (context, snapshot) {
-                if(snapshot.hasData) {
-                  List<RoomData.Room> rooms = getRoom(snapshot.data!);
-                  if(rooms.isNotEmpty) {
-                    _tabController = TabController(length: rooms.length, vsync: this);
-                    _tabController.index = selectedTab;
-                    _tabController.addListener(() {
-                      selectedTab = _tabController.index;
-                    });
-                    roomView = generateRoom(rooms);
-                    tabView = getTabBar(rooms);
-                    return Expanded(
-                      child: Column(
-                        mainAxisSize:MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 0),
-                            child: TabBar(
-                              tabAlignment: TabAlignment.center,
-                              isScrollable: true,
-                              unselectedLabelColor: Theme.of(context).colorScheme.secondary,
-                              labelColor: Theme.of(context).colorScheme.primary,
-                              labelPadding: EdgeInsets.only(right: 10),
-                              indicatorColor: Colors.transparent,
-                              dividerColor: Colors.transparent,
-                              tabs: tabView,
-                              controller: _tabController,
-                              indicatorSize: TabBarIndicatorSize.tab,
-                            ),
                           ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-                            child: Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                                  child: Text(
-                                    'Rooms',
-                                    style: TextStyle(fontSize: 20, color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Divider(
-                                    thickness: 0.5,
-                                    color: Theme.of(context).colorScheme.secondary,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-                              child: TabBarView(
-                                controller: _tabController,
-                                children: roomView,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                  padding: EdgeInsets.only(right: 16),
+                                  child: CustomNotifyIconButton(
+                                    iconActive: Icons.notifications_active,
+                                    iconInacctive: Icons.notifications,
+                                    onPressed: () {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(builder: (context) => Notifications())
+                                      );
+                                    },
+                                    unreadMessage: countUnread(),
+                                    backgroundColor: Theme.of(context).colorScheme.surface,
+                                    borderColor: Theme.of(context).colorScheme.primary,
+                                    iconColor: Theme.of(context).colorScheme.primary,
+                                  )
                               ),
-                            ),
+                              CustomIconButton(
+                                icon: Icons.more_horiz,
+                                onPressed: () async {
+                                  Navigator.of(context).push(
+                                      MaterialPageRoute(builder: (context) => Setting())
+                                  );
+                                },
+                                backgroundColor: Theme.of(context).colorScheme.surface,
+                                borderColor: Theme.of(context).colorScheme.primary,
+                                iconColor: Theme.of(context).colorScheme.primary,
+                              )
+                            ],
                           )
                         ],
                       ),
-                    );
-                  } else {
-                    return Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: verticalPadding,
-                            horizontal: horizontalPadding
-                        ),
-                        child: EmptyTabView()
-                      )
-                    );
-                  }
-                }
-                return Expanded(
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      color: Theme.of(context).colorScheme.primary,
-                      backgroundColor: Theme.of(context).colorScheme.surface,
                     ),
-                  ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            AppLocalizations.of(context)!.welcome_home(user.firstname),
+                            style: TextStyle(fontSize: 25, color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                          ),
+                          DateWeatherBox(),
+                        ],
+                      ),
+                    ),
+                    StreamBuilder(
+                      stream: _room_stream,
+                      builder: (context, snapshot) {
+                        if(snapshot.hasData) {
+                          List<RoomData.Room> rooms = getRoom(snapshot.data!);
+                          if(rooms.isNotEmpty) {
+                            _tabController = TabController(length: rooms.length, vsync: this);
+                            _tabController.index = selectedTab;
+                            _tabController.addListener(() {
+                              selectedTab = _tabController.index;
+                            });
+                            roomView = generateRoom(rooms);
+                            tabView = getTabBar(rooms);
+                            return Expanded(
+                              child: Column(
+                                mainAxisSize:MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 0),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          width: 60,
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                color: Theme.of(context).colorScheme.primary,
+                                                width: 0.5,
+                                              ),
+                                              color: Theme.of(context).colorScheme.tertiary,
+                                              shape: BoxShape.rectangle,
+                                              borderRadius: BorderRadius.all(Radius.circular(15))
+                                          ),
+                                          child: IconButton(
+                                            onPressed: () {
+                                              Navigator.pushNamed(
+                                                context,
+                                                RoomCreate.route_name,
+                                              );
+                                            },
+                                            icon: Icon(Icons.add),
+                                            style: IconButton.styleFrom(
+                                              backgroundColor: Theme.of(context).colorScheme.tertiary,
+                                              foregroundColor: Theme.of(context).colorScheme.primary,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 50,
+                                          child: VerticalDivider(
+                                            thickness: 0.5,
+                                            color: Theme.of(context).colorScheme.secondary,
+                                          ),
+                                        ),
+                                        TabBar(
+                                          tabAlignment: TabAlignment.center,
+                                          isScrollable: true,
+                                          unselectedLabelColor: Theme.of(context).colorScheme.secondary,
+                                          labelColor: Theme.of(context).colorScheme.primary,
+                                          labelPadding: EdgeInsets.only(right: 10),
+                                          indicatorColor: Colors.transparent,
+                                          dividerColor: Colors.transparent,
+                                          tabs: tabView,
+                                          controller: _tabController,
+                                          indicatorSize: TabBarIndicatorSize.tab,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                                    child: Row(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                          child: Text(
+                                            AppLocalizations.of(context)!.rooms,
+                                            style: TextStyle(fontSize: 20, color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Divider(
+                                            thickness: 0.5,
+                                            color: Theme.of(context).colorScheme.secondary,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                                      child: TabBarView(
+                                        controller: _tabController,
+                                        children: roomView,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            );
+                          } else {
+                            return Expanded(
+                                child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: verticalPadding,
+                                        horizontal: horizontalPadding
+                                    ),
+                                    child: EmptyTabView()
+                                )
+                            );
+                          }
+                        }
+                        return Expanded(
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              color: Theme.of(context).colorScheme.primary,
+                              backgroundColor: Theme.of(context).colorScheme.surface,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 );
-              },
-            ),
-          ],
+              }
+              return Expanded(
+                child: Center(
+                  child: CircularProgressIndicator(
+                    color: Theme.of(context).colorScheme.primary,
+                    backgroundColor: Theme.of(context).colorScheme.surface,
+                  ),
+                ),
+              );
+            }
+            return Expanded(
+              child: Center(
+                child: CircularProgressIndicator(
+                  color: Theme.of(context).colorScheme.primary,
+                  backgroundColor: Theme.of(context).colorScheme.surface,
+                ),
+              ),
+            );
+          }
         )
       )
     );

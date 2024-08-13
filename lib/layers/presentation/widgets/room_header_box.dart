@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gfi/layers/presentation/pages/device/DeviceManagement.dart';
-import 'package:gfi/layers/presentation/pages/room/RoomManagement.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class RoomHeaderBox extends StatelessWidget {
   Color borderColor;
@@ -56,7 +55,7 @@ class RoomHeaderBox extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text('Manage Room', style: TextStyle(
+                  Text(AppLocalizations.of(context)!.room_management, style: TextStyle(
                       color: Theme.of(context).colorScheme.tertiary
                   ),),
                   Container(

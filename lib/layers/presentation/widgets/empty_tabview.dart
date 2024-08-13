@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:gfi/layers/presentation/pages/room/RoomCreate.dart';
 
 class EmptyTabView extends StatelessWidget {
@@ -24,7 +25,7 @@ class EmptyTabView extends StatelessWidget {
             Padding(
               padding: EdgeInsets.all(16),
               child: Text(
-                "Is seem like you have no active devices",
+                AppLocalizations.of(context)!.empty_home,
                 style: TextStyle(fontSize: 20, color: Theme.of(context).colorScheme.primary),
                 textAlign: TextAlign.center,
               ),
@@ -32,7 +33,7 @@ class EmptyTabView extends StatelessWidget {
             Padding(
               padding: EdgeInsets.all(16),
               child: Text(
-                "Start add room for your devices!!!",
+                AppLocalizations.of(context)!.empty_home_explain,
                 style: TextStyle(fontSize: 15, color: Theme.of(context).colorScheme.secondary),
                 textAlign: TextAlign.center,
               ),

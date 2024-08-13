@@ -30,12 +30,14 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: any
 
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
-  intl: ^0.19.0
   fl_chart: ^0.68.0
   firebase_core: ^3.1.1
   firebase_auth: ^5.1.1
@@ -49,10 +51,15 @@ dependencies:
   firebase_storage: ^12.1.1
   image_picker: ^1.1.2
   geolocator: ^12.0.0
-  flutter_localization: ^0.2.1
   flutter_staggered_grid_view: ^0.7.0
   mobile_scanner: ^5.1.1
   awesome_notifications: any
+  flutter_background_service: ^5.0.7
+  flutter_local_notifications: ^17.2.1+2
+  provider: ^6.1.2
+  flutter_email_sender: ^6.0.3
+  shared_preferences: ^2.3.1
+  smooth_page_indicator: ^1.2.0+3
 
 dev_dependencies:
   flutter_test:
@@ -74,10 +81,26 @@ flutter:
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
+  generate: true
   uses-material-design: true
+
+  fonts:
+    - family: Sono
+      fonts:
+        - asset: assets/fonts/Sono_Proportional-Regular.ttf
+    - family: K2D
+      fonts:
+        - asset: assets/fonts/K2D-Medium.ttf
+    - family: Baloo2
+      fonts:
+        - asset: assets/fonts/Baloo2-Regular.ttf
+    - family: Exo
+      fonts:
+        - asset: assets/fonts/Exo-SemiBold.ttf
 
   assets:
     - assets/images/
+    - assets/images/onboarding/
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

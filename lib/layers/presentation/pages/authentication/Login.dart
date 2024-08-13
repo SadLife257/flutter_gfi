@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:gfi/layers/data/data_source/remote/FirebaseAuthenticationService.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
+import 'package:gfi/layers/data/data_source/remote/firebase/FirebaseAuthenticationService.dart';
 import 'package:gfi/layers/presentation/pages/authentication/ForgotPassword.dart';
 import 'package:gfi/layers/presentation/pages/authentication/Register.dart';
 import 'package:gfi/layers/presentation/widgets/square_tile.dart';
@@ -36,9 +37,9 @@ class _LoginState extends State<Login> {
     );
 
     try{
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text,
-        password: passwordController.text
+      await FirebaseAuthentication().signInWithEmail(
+        emailController.text,
+        passwordController.text
       );
       Navigator.pop(context);
     } on FirebaseException catch(e) {
@@ -83,7 +84,7 @@ class _LoginState extends State<Login> {
                 Padding(
                   padding: EdgeInsets.all(8),
                   child: Text(
-                    'Welcome',
+                    AppLocalizations.of(context)!.welcome,
                     style: TextStyle(
                         fontSize: 35,
                         fontWeight: FontWeight.bold,
@@ -101,8 +102,8 @@ class _LoginState extends State<Login> {
                         color: Theme.of(context).colorScheme.primary
                     ),
                     decoration: InputDecoration(
-                      hintText: 'Email',
-                      labelText: 'Email',
+                      hintText: AppLocalizations.of(context)!.email,
+                      labelText: AppLocalizations.of(context)!.email,
                       hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
                       labelStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
                       border: OutlineInputBorder(
@@ -123,7 +124,7 @@ class _LoginState extends State<Login> {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return "Please enter your email";
+                        return AppLocalizations.of(context)!.email_error_empty;
                       }
                       return null;
                     },
@@ -139,8 +140,8 @@ class _LoginState extends State<Login> {
                         color: Theme.of(context).colorScheme.primary
                     ),
                     decoration: InputDecoration(
-                        hintText: 'Password',
-                        labelText: 'Password',
+                        hintText: AppLocalizations.of(context)!.password,
+                        labelText: AppLocalizations.of(context)!.password,
                         hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
                         labelStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
                         border: OutlineInputBorder(
@@ -171,7 +172,7 @@ class _LoginState extends State<Login> {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return "Please enter your password";
+                        return AppLocalizations.of(context)!.password_error_empty;
                       }
                       return null;
                     },
@@ -191,7 +192,7 @@ class _LoginState extends State<Login> {
                           );
                         },
                         child: Text(
-                          'Forgot Password?',
+                          AppLocalizations.of(context)!.forgot_pass,
                           style: TextStyle(color: Theme.of(context).colorScheme.primary),
                         ),
                       ),
@@ -219,7 +220,7 @@ class _LoginState extends State<Login> {
                           signInEmail();
                         }
                       },
-                      child: Text('LOGIN'),
+                      child: Text(AppLocalizations.of(context)!.login_cap),
                     ),
                   ),
                 ),
@@ -236,7 +237,7 @@ class _LoginState extends State<Login> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10.0),
                         child: Text(
-                          'Or continue with',
+                          'Or continue with', //AppLocalizations.of(context)!.login_alternative
                           style: TextStyle(color:  Theme.of(context).colorScheme.secondary),
                         ),
                       ),
@@ -284,7 +285,7 @@ class _LoginState extends State<Login> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Not a member?',
+                      AppLocalizations.of(context)!.not_member,
                       style: TextStyle(color:  Theme.of(context).colorScheme.secondary),
                     ),
                     TextButton(
@@ -295,8 +296,8 @@ class _LoginState extends State<Login> {
                           ),
                         );
                       },
-                      child: const Text(
-                        'Join us',
+                      child: Text(
+                        AppLocalizations.of(context)!.join_us,
                         style: TextStyle(
                           color: Colors.blue,
                           fontWeight: FontWeight.bold,

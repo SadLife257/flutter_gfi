@@ -1,12 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:gfi/layers/domain/entities/Device.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:gfi/layers/domain/entities/Device/Hardware.dart';
-import 'package:gfi/layers/domain/entities/Device_2_Room.dart';
 import 'package:gfi/layers/domain/entities/Hardware_2_Room.dart';
 import 'package:gfi/layers/domain/entities/Room.dart';
-import 'package:gfi/layers/presentation/pages/device/DeviceManagement.dart';
 import 'package:gfi/layers/presentation/pages/device/DeviceScan.dart';
 import 'package:gfi/layers/presentation/pages/device/DeviceSetting.dart';
 import 'package:gfi/layers/presentation/pages/room/RoomSetting.dart';
@@ -75,8 +73,8 @@ class _RoomManagementState extends State<RoomManagement> {
     showDialog<String>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        title: Text('Delete ${roomNameController.text.trim()}'),
-        content: Text('Please confirm'),
+        title: Text(AppLocalizations.of(context)!.room_delete_name(roomNameController.text.trim())),
+        content: Text(AppLocalizations.of(context)!.confirm_required),
         backgroundColor: Theme.of(context).colorScheme.surface,
         actions: <Widget>[
           TextButton(
@@ -84,8 +82,8 @@ class _RoomManagementState extends State<RoomManagement> {
               backgroundColor: Theme.of(context).colorScheme.primary,
               foregroundColor: Theme.of(context).colorScheme.tertiary,
             ),
-            onPressed: () => Navigator.pop(context, 'Cancel'),
-            child: const Text('Cancel'),
+            onPressed: () => Navigator.pop(context, AppLocalizations.of(context)!.cancel),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           TextButton(
             style: TextButton.styleFrom(
@@ -97,7 +95,7 @@ class _RoomManagementState extends State<RoomManagement> {
                 Navigator.popUntil(context, ModalRoute.withName('/'));
               });
             },
-            child: const Text('Confirm'),
+            child: Text(AppLocalizations.of(context)!.confirm),
           ),
         ],
       ),
@@ -117,7 +115,7 @@ class _RoomManagementState extends State<RoomManagement> {
           backgroundColor: Theme.of(context).colorScheme.surface,
           centerTitle: true,
           title: Text(
-            'Room Management',
+            AppLocalizations.of(context)!.room_management,
             style: TextStyle(
                 color: Theme.of(context).colorScheme.primary,
                 fontWeight: FontWeight.bold
@@ -156,7 +154,7 @@ class _RoomManagementState extends State<RoomManagement> {
                       color: Theme.of(context).colorScheme.primary
                   ),
                   decoration: InputDecoration(
-                      labelText: 'Room Name',
+                      labelText: AppLocalizations.of(context)!.room_name,
                       hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
                       labelStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
                       border: OutlineInputBorder(
@@ -201,7 +199,7 @@ class _RoomManagementState extends State<RoomManagement> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return "Please enter your room name";
+                      return AppLocalizations.of(context)!.room_name_error_empty;
                     }
                     return null;
                   },
@@ -220,7 +218,7 @@ class _RoomManagementState extends State<RoomManagement> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Text(
-                        'Devices',
+                        AppLocalizations.of(context)!.devices,
                         style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                       ),
                     ),

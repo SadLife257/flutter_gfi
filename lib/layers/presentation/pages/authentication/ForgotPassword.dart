@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
+import 'package:gfi/layers/data/data_source/remote/firebase/FirebaseAuthenticationService.dart';
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({super.key});
@@ -13,12 +15,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
   Future resetPassword() async {
     try {
-      await FirebaseAuth.instance.sendPasswordResetEmail(
-          email: emailController.text.trim()
+      await FirebaseAuthentication().resetPassword(
+        emailController.text.trim()
       );
-      showExceptionMessage("We've sent a password reset link to your email");
+      showExceptionMessage(AppLocalizations.of(context)!.reset_pass_success,);
     } on FirebaseException catch(e) {
-      showExceptionMessage("This email haven't sign up");
+      showExceptionMessage(AppLocalizations.of(context)!.reset_pass_fail,);
     }
   }
 
@@ -54,7 +56,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           backgroundColor: Theme.of(context).colorScheme.surface,
           centerTitle: true,
           title: Text(
-            'Reset Password',
+            AppLocalizations.of(context)!.reset_pass,
             style: TextStyle(
                 color: Theme.of(context).colorScheme.primary,
                 fontWeight: FontWeight.bold
@@ -79,7 +81,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               Padding(
                 padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
                 child: Text(
-                  'Enter your email, and we will send you a reset password',
+                  AppLocalizations.of(context)!.reset_pass_explain,
                   style: TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.bold,
@@ -95,8 +97,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       color: Theme.of(context).colorScheme.primary
                   ),
                   decoration: InputDecoration(
-                    hintText: 'Email',
-                    labelText: 'Email',
+                    hintText: AppLocalizations.of(context)!.email,
+                    labelText: AppLocalizations.of(context)!.email,
                     hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
                     labelStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
                     border: OutlineInputBorder(
@@ -134,7 +136,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       ),
                     ),
                     onPressed: resetPassword,
-                    child: Text('SEND'),
+                    child: Text(AppLocalizations.of(context)!.send),
                   ),
                 ),
               ),

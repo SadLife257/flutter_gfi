@@ -1,9 +1,8 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:gfi/layers/presentation/pages/AuthReDirect.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:gfi/layers/presentation/pages/Home.dart';
 
 class EmailVerification extends StatefulWidget {
@@ -101,7 +100,7 @@ class _EmailVerificationState extends State<EmailVerification> {
               Padding(
                 padding: EdgeInsets.all(8),
                 child: Text(
-                  'Check your email',
+                  AppLocalizations.of(context)!.check_email,
                   style: TextStyle(
                       fontSize: 35,
                       fontWeight: FontWeight.bold,
@@ -112,7 +111,7 @@ class _EmailVerificationState extends State<EmailVerification> {
               Padding(
                 padding: EdgeInsets.all(8),
                 child: Text(
-                  "We've sent you a verification email",
+                  AppLocalizations.of(context)!.check_email_explain,
                   style: TextStyle(
                       color: Theme.of(context).colorScheme.primary
                   ),
@@ -135,7 +134,7 @@ class _EmailVerificationState extends State<EmailVerification> {
                       ),
                     ),
                     onPressed: canResendEmail ? sendVerificationEmail : null,
-                    child: Text('RE-SEND EMAIL'),
+                    child: Text(AppLocalizations.of(context)!.resend_cap,),
                   ),
                 ),
               ),
@@ -158,7 +157,7 @@ class _EmailVerificationState extends State<EmailVerification> {
                     onPressed: () {
                       FirebaseAuth.instance.signOut();
                     },
-                    child: Text('CANCEL'),
+                    child: Text(AppLocalizations.of(context)!.cancel_cap),
                   ),
                 ),
               ),

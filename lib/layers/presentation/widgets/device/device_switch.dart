@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class DeviceSwitch extends StatelessWidget {
   final String deviceName;
@@ -15,6 +16,7 @@ class DeviceSwitch extends StatelessWidget {
   Color iconOnColor;
   Color iconOffColor;
   double borderWidth;
+  double borderRadius;
 
   DeviceSwitch({
     super.key,
@@ -29,6 +31,7 @@ class DeviceSwitch extends StatelessWidget {
     this.deviceNameOnColor = Colors.white,
     this.deviceNameOffColor = Colors.white,
     this.borderWidth = 0.5,
+    this.borderRadius = 15,
   });
 
   @override
@@ -37,7 +40,7 @@ class DeviceSwitch extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
           border: Border.all(color: backgroundOnColor, width: borderWidth),
           color: powerOn ? backgroundOnColor : backgroundOffColor,
         ),
@@ -61,7 +64,7 @@ class DeviceSwitch extends StatelessWidget {
                     maxLines: 2,
                   ),
                   Text(
-                    powerOn ? 'On' : 'Off',
+                    powerOn ? AppLocalizations.of(context)!.on : AppLocalizations.of(context)!.off,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,

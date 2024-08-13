@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:gfi/layers/presentation/widgets/device/device_chart.dart';
 import 'package:gfi/layers/presentation/widgets/device/device_scroll_wheel.dart';
@@ -10,7 +11,6 @@ class DeviceController extends StatelessWidget {
 
   final bool isDeviceOnline;
   final String deviceName;
-  final Function() deviceEdit;
 
   final bool isAutoMode;
   final Function(bool) autoModeOnChanged;
@@ -20,11 +20,14 @@ class DeviceController extends StatelessWidget {
   final Function(bool) servoOnChanged;
   final Function() servoOnTap;
 
+  final Function() gasLimitOnTap;
   final int gasDetect;
   final int gasLimit;
 
   final int relayValue;
   final Function(int) relayOnChanged;
+
+  final List<FlSpot> data;
 
   double borderWidth;
 
@@ -32,7 +35,6 @@ class DeviceController extends StatelessWidget {
     super.key,
     required this.isDeviceOnline,
     required this.deviceName,
-    required this.deviceEdit,
     required this.isAutoMode,
     required this.autoModeOnChanged,
     required this.autoModeOnTap,
@@ -41,8 +43,10 @@ class DeviceController extends StatelessWidget {
     required this.servoOnTap,
     required this.gasDetect,
     required this.gasLimit,
+    required this.gasLimitOnTap,
     required this.relayValue,
     required this.relayOnChanged,
+    required this.data,
     this.borderWidth = 0.5,
   });
 
@@ -62,53 +66,44 @@ class DeviceController extends StatelessWidget {
           padding: EdgeInsets.all(8),
           child: StaggeredGrid.count(
             crossAxisCount: 8,
-            mainAxisSpacing: 4,
-            crossAxisSpacing: 4,
+            mainAxisSpacing: 2,
+            crossAxisSpacing: 2,
             children: [
               StaggeredGridTile.count(
                 crossAxisCellCount: 8,
                 mainAxisCellCount: 1,
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    border: Border.all(color: Theme.of(context).colorScheme.primary, width: borderWidth),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.circle,
-                            color: isDeviceOnline ? Colors.green : Colors.red,
-                            size: 10,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.circle,
+                          color: isDeviceOnline ? Colors.green : Colors.red,
+                          size: 10,
+                        ),
+                        Text(
+                          isDeviceOnline ? AppLocalizations.of(context)!.online : AppLocalizations.of(context)!.offline,
+                          style: TextStyle(
+                            fontSize: 8,
+                            color: isDeviceOnline ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.secondary
                           ),
-                          Text(
-                            isDeviceOnline ? 'Online' : 'Offline',
-                            style: TextStyle(
-                              fontSize: 8,
-                              color: isDeviceOnline ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.secondary
-                            ),
-                          ),
-                        ],
-                      ),
-                      Text(
-                          deviceName
-                      ),
-                      IconButton(
-                        onPressed: deviceEdit,
-                        icon: Icon(Icons.edit),
-                      )
-                    ],
-                  ),
+                        ),
+                      ],
+                    ),
+                    Text(
+                        deviceName
+                    ),
+                    SizedBox(width: 10,)
+                  ],
                 ),
               ),
               StaggeredGridTile.count(
                 crossAxisCellCount: 4,
                 mainAxisCellCount: 2,
                 child: DeviceSwitch(
-                  deviceName: 'Auto',
+                  deviceName: AppLocalizations.of(context)!.auto,
                   powerOn: isAutoMode,
                   onChanged: autoModeOnChanged,
                   onTap: autoModeOnTap,
@@ -118,13 +113,14 @@ class DeviceController extends StatelessWidget {
                   iconOffColor: Theme.of(context).colorScheme.secondary,
                   deviceNameOnColor: Theme.of(context).colorScheme.tertiary,
                   deviceNameOffColor: Theme.of(context).colorScheme.secondary,
+                  borderWidth: 0.1,
                 ),
               ),
               StaggeredGridTile.count(
                 crossAxisCellCount: 4,
                 mainAxisCellCount: 2,
                 child: DeviceSwitch(
-                  deviceName: 'Servo',
+                  deviceName: AppLocalizations.of(context)!.servo,
                   powerOn: isServo,
                   onChanged: servoOnChanged,
                   onTap: servoOnTap,
@@ -134,60 +130,48 @@ class DeviceController extends StatelessWidget {
                   iconOffColor: Theme.of(context).colorScheme.secondary,
                   deviceNameOnColor: Theme.of(context).colorScheme.tertiary,
                   deviceNameOffColor: Theme.of(context).colorScheme.secondary,
+                  borderWidth: 0.1,
                 ),
               ),
               StaggeredGridTile.count(
                 crossAxisCellCount: 6,
                 mainAxisCellCount: 6,
                 child: DeviceChart(
-                  data: [
-                    FlSpot(0, 200),
-                    FlSpot(2.6 * 60, 220),
-                    FlSpot(4.9 * 60, 100),
-                    FlSpot(6.8 * 60, 400),
-                    FlSpot(8 * 60, 700),
-                    FlSpot(9.5 * 60, 300),
-                    FlSpot(11 * 60, 400),
-                    FlSpot(13 * 60, 200),
-                    FlSpot(14 * 60, 600),
-                    FlSpot(16 * 60, 700),
-                    FlSpot(17 * 60, 200),
-                    FlSpot(19 * 60, 800),
-                    FlSpot(20 * 60, 200),
-                    FlSpot(21 * 60, 1000),
-                    FlSpot(23 * 60, 900),
-                    FlSpot(24 * 60, 200),
-                  ],
-                  limitRange: 1100,
-                  min_x: 0,
-                  max_x: 24 * 60, //every minute
+                  data: data,
+                  limitRange: gasLimit.toDouble(),
+                  min_x: data.first.x,
+                  max_x: data.last.x, //every minute
                   min_y: 0,
-                  max_y: 1100 + 400,
-                  horizontalInterval: 300,
-                  verticalInterval: 3 * 60,
+                  max_y: gasLimit.toDouble() + (gasLimit.toDouble() * 30 / 100),
+                  horizontalInterval: (gasLimit.toDouble() + (gasLimit.toDouble() * 70 / 100)) / 10,
+                  verticalInterval: (data.last.x - data.first.x + 1) / 5,
                   mainGridColor: Theme.of(context).colorScheme.primary,
-                  gradientColors: [Theme.of(context).colorScheme.secondary, Theme.of(context).colorScheme.secondary],
+                  gradientColors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.primary],
                   reduceNum: 500,
+                  borderWidth: 0.1,
                 ),
               ),
               StaggeredGridTile.count(
                 crossAxisCellCount: 2,
                 mainAxisCellCount: 3,
                 child: DeviceVariableBox(
-                  deviceName: 'Gas',
+                  deviceName: AppLocalizations.of(context)!.gas,
                   value: gasDetect,
                   limit: gasLimit,
+                  onTap: gasLimitOnTap,
                   backgroundColor: Theme.of(context).colorScheme.primary,
+                  borderWidth: 0.1,
                 ),
               ),
               StaggeredGridTile.count(
                   crossAxisCellCount: 2,
                   mainAxisCellCount: 3,
                   child: DeviceScrollWheel(
-                    name: 'Relay',
+                    name: AppLocalizations.of(context)!.relay,
                     initialItem: relayValue,
                     relay_list: [0, 1, 2, 3],
                     onSelectedItemChanged: relayOnChanged,
+                    borderWidth: 0.1,
                   )
               ),
             ],

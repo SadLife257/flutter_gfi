@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class RoomSetting extends StatefulWidget {
   const RoomSetting({super.key});
@@ -19,7 +20,7 @@ class _RoomSettingState extends State<RoomSetting> {
           Padding(
             padding: EdgeInsets.all(16),
             child: Text(
-              'Room Management',
+                AppLocalizations.of(context)!.room_management,
               style: TextStyle(
                 color: Theme.of(context).colorScheme.primary,
                 fontWeight: FontWeight.bold,
@@ -48,7 +49,7 @@ class _RoomSettingState extends State<RoomSetting> {
                   color: Theme.of(context).colorScheme.primary,
                 ),
                 label: Text(
-                  'Delete',
+                    AppLocalizations.of(context)!.delete,
                 ),
               ),
             ),

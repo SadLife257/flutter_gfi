@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:gfi/layers/domain/entities/Room.dart';
 import 'package:intl/intl.dart';
 
@@ -42,9 +43,21 @@ class _RoomCreateState extends State<RoomCreate> {
       hardware: {}
     );
 
-    await FirebaseFirestore.instance.collection('users_room').doc(userId).update({
-      newRoom.name: newRoom.toJson()
+    DocumentReference docRef = FirebaseFirestore.instance.collection('users_room').doc(userId);
+    docRef.get().then((doc) {
+      if(doc.exists) {
+        FirebaseFirestore.instance.collection('users_room').doc(userId).update({
+          newRoom.name: newRoom.toJson()
+        });
+      }
+      else {
+        FirebaseFirestore.instance.collection('users_room').doc(userId).set({
+          newRoom.name: newRoom.toJson()
+        });
+      }
     });
+
+
 
     // await FirebaseFirestore.instance.collection('users_info').doc(userId).collection('room').add(newRoom.toJson());
   }
@@ -90,7 +103,7 @@ class _RoomCreateState extends State<RoomCreate> {
                 Padding(
                   padding: EdgeInsets.all(8),
                   child: Text(
-                    'Add New Room to Your Home',
+                    AppLocalizations.of(context)!.add_room,
                     style: TextStyle(
                         fontSize: 25,
                         fontWeight: FontWeight.bold,
@@ -108,8 +121,8 @@ class _RoomCreateState extends State<RoomCreate> {
                         color: Theme.of(context).colorScheme.primary
                     ),
                     decoration: InputDecoration(
-                      hintText: 'Room Name',
-                      labelText: 'Room Name',
+                      hintText: AppLocalizations.of(context)!.room_name_hint,
+                      labelText: AppLocalizations.of(context)!.room_name,
                       hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
                       labelStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
                       border: OutlineInputBorder(
@@ -143,7 +156,7 @@ class _RoomCreateState extends State<RoomCreate> {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return "Please enter your room name";
+                        return AppLocalizations.of(context)!.room_name_error_empty;
                       }
                       return null;
                     },

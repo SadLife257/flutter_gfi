@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
+import 'package:gfi/layers/domain/entities/Locale.dart';
+import 'package:gfi/layers/domain/entities/Theme.dart';
 import 'package:gfi/layers/presentation/pages/room/RoomCreate.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Setting extends StatefulWidget {
   const Setting({super.key});
@@ -13,6 +19,7 @@ class Setting extends StatefulWidget {
 class _SettingState extends State<Setting> {
   @override
   Widget build(BuildContext context) {
+    var selectedLocale = Localizations.localeOf(context).toString();
     return SafeArea(
       child: Scaffold(
         extendBody: true,
@@ -21,7 +28,7 @@ class _SettingState extends State<Setting> {
           backgroundColor: Theme.of(context).colorScheme.surface,
           centerTitle: true,
           title: Text(
-            'Setting',
+            AppLocalizations.of(context)!.setting,
             style: TextStyle(
                 color: Theme.of(context).colorScheme.primary,
                 fontWeight: FontWeight.bold
@@ -47,7 +54,7 @@ class _SettingState extends State<Setting> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Text(
-                      'Add to Home',
+                      AppLocalizations.of(context)!.manage_home,
                       style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                     ),
                   ),
@@ -86,34 +93,8 @@ class _SettingState extends State<Setting> {
                         RoomCreate.route_name,
                     );
                   },
-                  label: Text('Add Room'),
+                  label: Text(AppLocalizations.of(context)!.add_room),
                   icon: Icon(Icons.add_home_outlined),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 16
-              ),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      foregroundColor: Theme.of(context).colorScheme.tertiary,
-                      minimumSize: Size.fromHeight(60),
-                      shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(16))
-                      ),
-                      alignment: Alignment.centerLeft
-                  ),
-                  onPressed: () {},
-                  label: Text('Add Family Member'),
-                  icon: Icon(Icons.person),
                 ),
               ),
             ),
@@ -124,7 +105,7 @@ class _SettingState extends State<Setting> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Text(
-                      'Manage',
+                        AppLocalizations.of(context)!.manage_app,
                       style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                     ),
                   ),
@@ -144,22 +125,56 @@ class _SettingState extends State<Setting> {
               ),
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.primary,
                   borderRadius: BorderRadius.circular(15),
                 ),
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    foregroundColor: Theme.of(context).colorScheme.tertiary,
-                    minimumSize: Size.fromHeight(60),
-                    shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(16))
-                    ),
-                    alignment: Alignment.centerLeft,
-                  ),
-                  onPressed: () {},
-                  label: Text('Manage Rooms'),
-                  icon: Icon(Icons.home_outlined),
+                child: Consumer<LocaleProvider>(
+                  builder: (context, localeProvider, child) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8,
+                          horizontal: 16
+                      ),
+                      child: DropdownButton(
+                        dropdownColor: Theme.of(context).colorScheme.primary,
+                        icon: Icon(
+                          Icons.keyboard_arrow_down,
+                          color:Theme.of(context).colorScheme.tertiary,
+                        ),
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.tertiary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        value: selectedLocale,
+                        items: [
+                          DropdownMenuItem(
+                            child: Text(
+                              AppLocalizations.of(context)!.setting_language("en"),
+                            ),
+                            value: "en",
+                          ),
+                          DropdownMenuItem(
+                            child: Text(
+                              AppLocalizations.of(context)!.setting_language("vi"),
+                            ),
+                            value: "vi",
+                          ),
+
+                        ],
+                        onChanged: (String? value) async {
+                          if (value != null) {
+                            SharedPreferences prefs = await SharedPreferences.getInstance();
+                            await prefs.setString("locale", value).then((_) {
+                              setState(() {
+
+                              });
+                            });
+                            localeProvider.set(Locale(value));
+                          }
+                        },
+                      ),
+                    );
+                  }
                 ),
               ),
             ),
@@ -170,48 +185,57 @@ class _SettingState extends State<Setting> {
               ),
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.primary,
                   borderRadius: BorderRadius.circular(15),
                 ),
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      foregroundColor: Theme.of(context).colorScheme.tertiary,
-                      minimumSize: Size.fromHeight(60),
-                      shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(16))
-                      ),
-                      alignment: Alignment.centerLeft
-                  ),
-                  onPressed: () {},
-                  label: Text('Manage Devices'),
-                  icon: Icon(Icons.devices_outlined),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 16
-              ),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      foregroundColor: Theme.of(context).colorScheme.tertiary,
-                      minimumSize: Size.fromHeight(60),
-                      shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(16))
-                      ),
-                      alignment: Alignment.centerLeft
-                  ),
-                  onPressed: () {},
-                  label: Text('Manage Family Members'),
-                  icon: Icon(Icons.group),
+                child: Consumer<ThemeProvider>(
+                    builder: (context, themeProvider, child) {
+                      var selectedTheme = themeProvider.isDarkMode() ? "dark" : "light";
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8,
+                            horizontal: 16
+                        ),
+                        child: DropdownButton(
+                          dropdownColor: Theme.of(context).colorScheme.primary,
+                          icon: Icon(
+                            Icons.keyboard_arrow_down,
+                            color:Theme.of(context).colorScheme.tertiary,
+                          ),
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.tertiary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          value: selectedTheme,
+                          items: [
+                            DropdownMenuItem(
+                              child: Text(
+                                AppLocalizations.of(context)!.setting_theme("dark"),
+                              ),
+                              value: "dark",
+                            ),
+                            DropdownMenuItem(
+                              child: Text(
+                                AppLocalizations.of(context)!.setting_theme("light"),
+                              ),
+                              value: "light",
+                            ),
+
+                          ],
+                          onChanged: (String? value) async {
+                            if (value != null) {
+                              SharedPreferences prefs = await SharedPreferences.getInstance();
+                              await prefs.setInt("isDarkMode", value == "dark" ? 1 : 0).then((_) {
+                                setState(() {
+
+                                });
+                              });
+                              themeProvider.set(value == "dark");
+                            }
+                          },
+                        ),
+                      );
+                    }
                 ),
               ),
             ),

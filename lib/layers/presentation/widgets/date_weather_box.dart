@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:gfi/layers/data/data_source/local/LocationService.dart';
 import 'package:gfi/layers/data/data_source/remote/WeatherService.dart';
@@ -15,8 +16,9 @@ class DateWeatherBox extends StatefulWidget {
 }
 
 class _DateWeatherBoxState extends State<DateWeatherBox> {
-  late final String date;
+  late String date;
   late String time;
+  late final Timer timer;
 
   double? longitude;
   double? latitude;
@@ -36,11 +38,8 @@ class _DateWeatherBoxState extends State<DateWeatherBox> {
 
   @override
   void initState() {
-    DateTime today = DateTime.now();
-    DateFormat formatter = DateFormat('EEEE, d MMMM, yyyy');
-    date = formatter.format(today);
     time = _formatDateTime(DateTime.now());
-    Timer.periodic(Duration(seconds: 1), (Timer t) => _getTime());
+    timer = Timer.periodic(Duration(seconds: 1), (Timer t) => _getTime());
 
     weather_info = getWeather();
     super.initState();
@@ -87,7 +86,16 @@ class _DateWeatherBoxState extends State<DateWeatherBox> {
   }
 
   @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    DateTime today = DateTime.now();
+    DateFormat formatter = DateFormat('EEEE, d MMMM, yyyy', AppLocalizations.of(context)!.language_code);
+    date = formatter.format(today);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [

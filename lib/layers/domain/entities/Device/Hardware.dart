@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:gfi/layers/domain/entities/Device/Token.dart';
 
 class Hardware {
   static const String MQ2 = 'v0';

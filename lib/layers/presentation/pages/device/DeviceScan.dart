@@ -1,10 +1,9 @@
-import 'dart:ffi';
 import 'dart:math';
-import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:gfi/layers/domain/entities/Device/Hardware.dart';
 import 'package:gfi/layers/domain/entities/Room.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -55,13 +54,13 @@ class _DeviceScanState extends State<DeviceScan> {
           return AlertDialog(
             backgroundColor: Theme.of(context).colorScheme.surface,
             title: Text(
-              'Wrong QR code',
+              AppLocalizations.of(context)!.device_scan_wrong,
               style: TextStyle(
                 color: Theme.of(context).colorScheme.primary,
               ),
             ),
             content: Text(
-              'It seem like you scan the wrong QR to connect to our device',
+              AppLocalizations.of(context)!.device_scan_wrong_explain,
               style: TextStyle(
                 color: Theme.of(context).colorScheme.primary,
               ),
@@ -83,7 +82,7 @@ class _DeviceScanState extends State<DeviceScan> {
           backgroundColor: Theme.of(context).colorScheme.surface,
           centerTitle: true,
           title: Text(
-            'Scan Device',
+            AppLocalizations.of(context)!.device_scan,
             style: TextStyle(
                 color: Theme.of(context).colorScheme.primary,
                 fontWeight: FontWeight.bold

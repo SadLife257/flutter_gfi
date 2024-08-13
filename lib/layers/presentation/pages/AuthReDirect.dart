@@ -18,7 +18,8 @@ class AuthReDirect extends StatelessWidget {
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
             if(snapshot.hasData) {
-              if(snapshot.data?.emailVerified == true){
+              if(snapshot.data?.emailVerified == true) {
+                //snapshot.data.uid
                 return Home();
               }
               else{

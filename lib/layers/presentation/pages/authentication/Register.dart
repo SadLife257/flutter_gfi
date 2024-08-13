@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
+import 'package:gfi/layers/data/data_source/remote/firebase/FirebaseAuthenticationService.dart';
 import 'package:gfi/layers/domain/entities/UserDetail.dart';
 import 'package:gfi/layers/presentation/pages/AuthReDirect.dart';
 
@@ -22,7 +24,6 @@ class _RegisterState extends State<Register> {
 
   @override
   void initState() {
-
     firstNameController = TextEditingController();
     lastNameController = TextEditingController();
     emailController = TextEditingController();
@@ -43,9 +44,9 @@ class _RegisterState extends State<Register> {
 
     try {
       if(passwordController.text == confirmPasswordController.text){
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: emailController.text,
-          password: passwordController.text
+        await FirebaseAuthentication().signUp(
+          emailController.text,
+          passwordController.text
         );
 
         saveUserDetail(UserDetail(
@@ -114,7 +115,7 @@ class _RegisterState extends State<Register> {
                   Padding(
                     padding: EdgeInsets.all(8),
                     child: Text(
-                      'Register',
+                      AppLocalizations.of(context)!.register,
                       style: TextStyle(
                           fontSize: 35,
                           fontWeight: FontWeight.bold,
@@ -131,8 +132,8 @@ class _RegisterState extends State<Register> {
                           color: Theme.of(context).colorScheme.primary
                       ),
                       decoration: InputDecoration(
-                        hintText: 'Enter your first name',
-                        labelText: 'First Name',
+                        hintText: AppLocalizations.of(context)!.firstname_hint,
+                        labelText: AppLocalizations.of(context)!.firstname,
                         hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
                         labelStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
                         border: OutlineInputBorder(
@@ -153,7 +154,7 @@ class _RegisterState extends State<Register> {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "Please enter your first name";
+                          return AppLocalizations.of(context)!.firstname_error_empty;
                         }
                         return null;
                       },
@@ -168,8 +169,8 @@ class _RegisterState extends State<Register> {
                           color: Theme.of(context).colorScheme.primary
                       ),
                       decoration: InputDecoration(
-                        hintText: 'Enter your last name',
-                        labelText: 'Last Name',
+                        hintText: AppLocalizations.of(context)!.lastname_hint,
+                        labelText: AppLocalizations.of(context)!.lastname,
                         hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
                         labelStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
                         border: OutlineInputBorder(
@@ -190,7 +191,7 @@ class _RegisterState extends State<Register> {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "Please enter your last name";
+                          return AppLocalizations.of(context)!.lastname_error_empty;
                         }
                         return null;
                       },
@@ -205,8 +206,8 @@ class _RegisterState extends State<Register> {
                           color: Theme.of(context).colorScheme.primary
                       ),
                       decoration: InputDecoration(
-                        hintText: 'Enter your email',
-                        labelText: 'Email',
+                        hintText: AppLocalizations.of(context)!.email,
+                        labelText: AppLocalizations.of(context)!.email_hint,
                         hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
                         labelStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
                         border: OutlineInputBorder(
@@ -227,7 +228,7 @@ class _RegisterState extends State<Register> {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "Please enter your email";
+                          return AppLocalizations.of(context)!.email_error_empty;
                         }
                         return null;
                       },
@@ -243,8 +244,8 @@ class _RegisterState extends State<Register> {
                           color: Theme.of(context).colorScheme.primary
                       ),
                       decoration: InputDecoration(
-                        hintText: 'Enter your password',
-                        labelText: 'Password',
+                        hintText: AppLocalizations.of(context)!.password_hint,
+                        labelText: AppLocalizations.of(context)!.password,
                         hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
                         labelStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
                         border: OutlineInputBorder(
@@ -265,10 +266,10 @@ class _RegisterState extends State<Register> {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "Please enter your password";
+                          return AppLocalizations.of(context)!.password_error_empty;
                         }
                         if(value != confirmPasswordController.text) {
-                          return 'Incorrect password';
+                          return AppLocalizations.of(context)!.password_error_confirm_wrong;
                         }
                         return null;
                       },
@@ -284,8 +285,8 @@ class _RegisterState extends State<Register> {
                           color: Theme.of(context).colorScheme.primary
                       ),
                       decoration: InputDecoration(
-                        hintText: 'Enter your password, again',
-                        labelText: 'Confirm Password',
+                        hintText: AppLocalizations.of(context)!.confirm_password_hint,
+                        labelText: AppLocalizations.of(context)!.confirm_password,
                         hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
                         labelStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
                         border: OutlineInputBorder(
@@ -306,10 +307,10 @@ class _RegisterState extends State<Register> {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return "Please enter your password";
+                          return AppLocalizations.of(context)!.confirm_password_error_empty;
                         }
                         if(value != passwordController.text) {
-                          return 'Incorrect password';
+                          return AppLocalizations.of(context)!.password_error_confirm_wrong;
                         }
                         return null;
                       },
@@ -336,7 +337,7 @@ class _RegisterState extends State<Register> {
                             signUp();
                           }
                         },
-                        child: Text('REGISTER'),
+                        child: Text(AppLocalizations.of(context)!.register_cap),
                       ),
                     ),
                   ),
@@ -344,7 +345,7 @@ class _RegisterState extends State<Register> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Already have an account!',
+                        AppLocalizations.of(context)!.already_have_account,
                         style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                       ),
                       TextButton(
@@ -355,8 +356,8 @@ class _RegisterState extends State<Register> {
                             ),
                           );
                         },
-                        child: const Text(
-                          'Login now',
+                        child: Text(
+                          AppLocalizations.of(context)!.login_now,
                           style: TextStyle(
                             color: Colors.blue,
                             fontWeight: FontWeight.bold,

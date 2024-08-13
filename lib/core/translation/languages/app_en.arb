@@ -1,0 +1,175 @@
+{
+    "language": "English",
+    "language_code": "en",
+
+    "confirm": "Confirm",
+    "confirm_required": "Please confirm",
+    "confirm_cap": "CONFIRM",
+    "cancel": "Cancel",
+    "cancel_cap": "CANCEL",
+    "save": "Save",
+    "save_cap": "SAVE",
+    "send": "Send",
+    "send_cap": "SEND",
+    "resend": "Re-Send",
+    "resend_cap": "RE-SEND",
+    "delete": "Delete",
+    "delete_cap": "DELETE",
+    "next": "Next",
+    "next_cap": "NEXT",
+    "skip": "Skip",
+    "skip_cap": "SKIP",
+    "finish": "Finish",
+    "finish_cap": "FINISH",
+    "upload": "Upload",
+    "upload_cap": "UPLOAD",
+    "welcome": "Welcome",
+    "welcome_home": "Welcome home \n{name}",
+    "@welcome_home": {
+        "placeholder": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "welcome_cap": "WELCOME",
+    "login": "Login",
+    "login_cap": "LOGIN",
+    "logout": "Logout",
+    "logout_cap": "LOGOUT",
+    "register": "Register",
+    "register_cap": "REGISTER",
+    "setting": "Setting",
+    "setting_cap": "SETTING",
+
+    "username": "Username",
+    "firstname": "First Name",
+    "firstname_hint": "Enter your first name",
+    "firstname_error_empty": "Please enter your first name",
+    "lastname": "Last Name",
+    "lastname_hint": "Enter your last name",
+    "lastname_error_empty": "Please enter your last name",
+    "confirm_password": "Confirm Password",
+    "confirm_password_hint": "Enter your password again",
+    "confirm_password_error_empty": "Please enter your password again",
+    "password_error_confirm_wrong": "Password are incorrect",
+    "email": "Email",
+    "email_hint": "Enter your email",
+    "email_error_empty": "Please enter email",
+    "password": "Password",
+    "password_hint": "Enter your password",
+    "password_error_empty": "Please enter password",
+
+    "forgot_pass": "Forgot Password?",
+    "login_alternative": "Or continue with",
+    "not_member": "Not a member",
+    "join_us": "Join us",
+    "already_have_account": "Already have an account!",
+    "login_now": "Login now",
+    "check_email": "Check your email",
+    "check_email_explain": "We've sent you a verification email",
+
+    "empty_home": "Is seem like you have no active devices",
+    "empty_home_explain": "Start add room for your devices!!!",
+
+    "reset_pass": "Reset Password",
+    "reset_pass_explain": "Enter your email, and we will send you a reset password",
+    "reset_pass_success": "We've sent a password reset link to your email",
+    "reset_pass_fail": "This email haven't sign up",
+
+    "device": "Device",
+    "devices": "Devices",
+
+    "device_scan": "Scan Device",
+    "device_scan_wrong": "Wrong QR code",
+    "device_scan_wrong_explain": "It seem like you scan the wrong QR to connect to our device",
+
+    "device_setting": "Device Setting",
+    "device_name_label": "Device Name",
+    "device_delete_name": "Delete {device_name}",
+    "@device_delete_name": {
+        "placeholder": {
+            "device_name": {
+                "type": "String"
+            }
+        }
+    },
+
+    "notification": "Notification",
+    "notification_permission": "Please allow notification in your",
+
+    "room": "Room",
+    "rooms": "Rooms",
+
+    "room_add_explain": "Add New Room to Your Home",
+    "room_name": "Room Name",
+    "room_name_hint": "Room Name",
+    "room_name_error_empty": "Please enter your room name",
+
+    "room_management": "Room Management",
+    "room_delete_name": "Delete {room_name}",
+    "@room_delete_name": {
+        "placeholder": {
+            "room_name": {
+                "type": "String"
+            }
+        }
+    },
+
+    "profile": "Profile",
+    "profile_info": "User Information",
+    "profile_operation": "User Operation",
+    "profile_img_pick_fail": "Pick profile image failed!",
+    "profile_img_upload_success": "Upload profile image successful!",
+    "profile_img_upload_fail": "Upload profile image failed!",
+
+    "manage_home": "Manage Home",
+    "add_room": "Add Room",
+    "manage_app": "Manage App",
+
+    "threshold": "threshold",
+    "online": "Online",
+    "offline": "Offline",
+    "on": "On",
+    "off": "Off",
+    "auto": "Auto",
+    "servo": "Servo",
+    "gas": "Gas",
+    "relay": "Relay",
+
+    "setting_language": "{locale, select, en {English} vi {Tiếng Việt} other {-}}",
+    "@setting_language": {
+      "placeholders": {
+        "locale": {
+          "type": "String"
+        }
+      }
+    },
+
+    "setting_theme": "{locale, select, dark {Dark Mode} light {Light Mode} other {-}}",
+    "@setting_theme": {
+      "placeholders": {
+        "locale": {
+          "type": "String"
+        }
+      }
+    },
+
+    "onboard_detail":"1|Welcome|Hey there! \nLet's get started with how you can monitor and protect your home from fire and gas poisoning.#2|Connect to Device|Simply, \ncreate a room that you want to monitor, \nand scan our device connection code.#3|Receive Alert|When we detect a gas build-up in your room, we will send you a notification.#4|Remote Control|You can safely turn off the gas valve from anywhere with your phone.#5|Enjoy|That's about it, thank you for choosing our product.",
+
+    "about_us": "About Us",
+    "about_us_cap": "ABOUT US",
+    "about_us_explain": "GFI - Gas and Fire Intelligence is our team Information Technology Project to improve fire safety for family and businesses by offering an insight into their temperature, gas concentration, etc, ... remotely through their devices.",
+    "this_project": "This Project",
+    "this_project_explain": "This app is a part of our project which uses platforms like Android and iOS to provide our service to hand-held devices aiming for family members.",
+    "our_team": "Our Team",
+    "our_team_introduction": "Our team consists of two members Lâm Quốc Huy, majoring in Computer Science at Tôn Đức Thắng University, and Nguyễn Lê Gia Bảo, majoring in Software Technology at Tôn Đức Thắng University. ",
+    "team_member_name_Huy": "Lâm Quốc Huy",
+    "team_member_university_email_Huy": "52000216@student.tdtu.edu.vn",
+    "team_member_major_Huy": "Computer Science",
+    "team_member_university_Huy": "Tôn Đức Thắng University",
+    "team_member_name_Bao": "Nguyễn Lê Gia Bảo",
+    "team_member_university_email_Bao": "52000632@student.tdtu.edu.vn",
+    "team_member_major_Bao": "Software Technology",
+    "team_member_university_Bao": "Tôn Đức Thắng University"
+}
