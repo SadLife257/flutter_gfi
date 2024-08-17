@@ -5,8 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:gfi/layers/domain/entities/Device/Hardware.dart';
-import 'package:gfi/layers/domain/entities/Room.dart' as RoomData;
-import 'package:gfi/layers/domain/entities/UserDetail.dart';
+import 'package:gfi/layers/domain/entities/Room/Room.dart' as RoomData;
+import 'package:gfi/layers/domain/entities/User/UserDetail.dart';
 import 'package:gfi/layers/presentation/pages/Profile.dart';
 import 'package:gfi/layers/presentation/pages/Setting.dart';
 import 'package:gfi/layers/presentation/pages/notification/Notification.dart';
@@ -26,7 +26,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> with TickerProviderStateMixin {
-  late TabController _tabController;
+  TabController? _tabController;
   late final String userId;
 
   late final Stream<DocumentSnapshot<Map<String, dynamic>>> _room_stream;
@@ -55,6 +55,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   void initState() {
     selectedTab = 0;
     userId = FirebaseAuth.instance.currentUser!.uid;
+    _tabController = TabController(length: 0, vsync: this);
     _room_stream = FirebaseFirestore.instance.collection('users_room').doc(userId).snapshots();
     _user_stream = FirebaseFirestore.instance.collection('users_info').doc(userId).snapshots();
     super.initState();
@@ -62,7 +63,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    _tabController.dispose();
+    _tabController?.dispose();
     super.dispose();
   }
 
@@ -91,18 +92,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     return result;
   }
 
-  // List<RoomData.Room> getRoomTest() {
-  //   FirebaseFirestore.instance.collection('users_room').doc(userId).collection('room').get().then(
-  //     (querySnapshot) {
-  //       print("Successfully completed");
-  //       for (var docSnapshot in querySnapshot.docs) {
-  //         print('${docSnapshot.id} => ${docSnapshot.data()}');
-  //       }
-  //     },
-  //     onError: (e) => print("Error completing: $e"),
-  //   );
-  // }
-
   List<RoomData.Room> getRoom(DocumentSnapshot<Map<String, dynamic>> doc) {
     List<RoomData.Room> rooms = [];
     if(doc.data() != null) {
@@ -116,6 +105,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                 name: data?['name'],
                 image_url: data?['image_url'],
                 token: data?['token'],
+                isMaximize: data?['is_maximize'],
               ))
             ),
             timestamp: v['timestamp'].toDate(),
@@ -123,6 +113,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
         );
       });
     }
+    rooms.sort((a, b) => a.timestamp.compareTo(b.timestamp));
     return rooms;
   }
 
@@ -132,8 +123,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     for (RoomData.Room i in rooms) {
       result.add(Room(
         room: i,
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        borderColor: Theme.of(context).colorScheme.tertiary,
       ));
     }
     return result;
@@ -190,37 +179,16 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                             borderColor: Theme.of(context).colorScheme.primary,
                             iconColor: Theme.of(context).colorScheme.primary,
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Padding(
-                                  padding: EdgeInsets.only(right: 16),
-                                  child: CustomNotifyIconButton(
-                                    iconActive: Icons.notifications_active,
-                                    iconInacctive: Icons.notifications,
-                                    onPressed: () {
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(builder: (context) => Notifications())
-                                      );
-                                    },
-                                    unreadMessage: countUnread(),
-                                    backgroundColor: Theme.of(context).colorScheme.surface,
-                                    borderColor: Theme.of(context).colorScheme.primary,
-                                    iconColor: Theme.of(context).colorScheme.primary,
-                                  )
-                              ),
-                              CustomIconButton(
-                                icon: Icons.more_horiz,
-                                onPressed: () async {
-                                  Navigator.of(context).push(
-                                      MaterialPageRoute(builder: (context) => Setting())
-                                  );
-                                },
-                                backgroundColor: Theme.of(context).colorScheme.surface,
-                                borderColor: Theme.of(context).colorScheme.primary,
-                                iconColor: Theme.of(context).colorScheme.primary,
-                              )
-                            ],
+                          CustomIconButton(
+                            icon: Icons.more_horiz,
+                            onPressed: () async {
+                              Navigator.of(context).push(
+                                  MaterialPageRoute(builder: (context) => Setting())
+                              );
+                            },
+                            backgroundColor: Theme.of(context).colorScheme.surface,
+                            borderColor: Theme.of(context).colorScheme.primary,
+                            iconColor: Theme.of(context).colorScheme.primary,
                           )
                         ],
                       ),
@@ -243,113 +211,134 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                     StreamBuilder(
                       stream: _room_stream,
                       builder: (context, snapshot) {
-                        if(snapshot.hasData) {
-                          List<RoomData.Room> rooms = getRoom(snapshot.data!);
-                          if(rooms.isNotEmpty) {
-                            _tabController = TabController(length: rooms.length, vsync: this);
-                            _tabController.index = selectedTab;
-                            _tabController.addListener(() {
-                              selectedTab = _tabController.index;
-                            });
-                            roomView = generateRoom(rooms);
-                            tabView = getTabBar(rooms);
-                            return Expanded(
-                              child: Column(
-                                mainAxisSize:MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 0),
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          width: 60,
-                                          decoration: BoxDecoration(
-                                              border: Border.all(
-                                                color: Theme.of(context).colorScheme.primary,
-                                                width: 0.5,
+                        if(snapshot.connectionState == ConnectionState.waiting) {
+                          return Expanded(
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                color: Theme.of(context).colorScheme.primary,
+                                backgroundColor: Theme.of(context).colorScheme.surface,
+                              ),
+                            ),
+                          );
+                        }
+                        else if(snapshot.connectionState == ConnectionState.active || snapshot.connectionState == ConnectionState.done) {
+                          if(snapshot.hasData) {
+                            List<RoomData.Room> rooms = getRoom(snapshot.data!);
+                            if(rooms.isNotEmpty) {
+                              _tabController = TabController(length: rooms.length, vsync: this);
+                              _tabController?.index = selectedTab < rooms.length ? selectedTab : 0;
+                              _tabController?.addListener(() {
+                                selectedTab = _tabController!.index;
+                              });
+                              roomView = generateRoom(rooms);
+                              tabView = getTabBar(rooms);
+                              if(_tabController != null && _tabController?.length == roomView.length && _tabController?.length == tabView.length) {
+                                return Flexible(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 0),
+                                        child: Row(
+                                          children: [
+                                            Container(
+                                              width: 60,
+                                              decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                    color: Theme.of(context).colorScheme.primary,
+                                                    width: 0.5,
+                                                  ),
+                                                  color: Theme.of(context).colorScheme.tertiary,
+                                                  shape: BoxShape.rectangle,
+                                                  borderRadius: BorderRadius.all(Radius.circular(15))
                                               ),
-                                              color: Theme.of(context).colorScheme.tertiary,
-                                              shape: BoxShape.rectangle,
-                                              borderRadius: BorderRadius.all(Radius.circular(15))
-                                          ),
-                                          child: IconButton(
-                                            onPressed: () {
-                                              Navigator.pushNamed(
-                                                context,
-                                                RoomCreate.route_name,
-                                              );
-                                            },
-                                            icon: Icon(Icons.add),
-                                            style: IconButton.styleFrom(
-                                              backgroundColor: Theme.of(context).colorScheme.tertiary,
-                                              foregroundColor: Theme.of(context).colorScheme.primary,
+                                              child: IconButton(
+                                                onPressed: () {
+                                                  Navigator.pushNamed(
+                                                    context,
+                                                    RoomCreate.route_name,
+                                                  );
+                                                },
+                                                icon: Icon(Icons.add),
+                                                style: IconButton.styleFrom(
+                                                  backgroundColor: Theme.of(context).colorScheme.tertiary,
+                                                  foregroundColor: Theme.of(context).colorScheme.primary,
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 50,
+                                              child: VerticalDivider(
+                                                thickness: 0.5,
+                                                color: Theme.of(context).colorScheme.secondary,
+                                              ),
+                                            ),
+                                            TabBar(
+                                              tabAlignment: TabAlignment.center,
+                                              isScrollable: true,
+                                              unselectedLabelColor: Theme.of(context).colorScheme.secondary,
+                                              labelColor: Theme.of(context).colorScheme.primary,
+                                              labelPadding: EdgeInsets.only(right: 10),
+                                              indicatorColor: Colors.transparent,
+                                              dividerColor: Colors.transparent,
+                                              tabs: tabView,
+                                              controller: _tabController,
+                                              indicatorSize: TabBarIndicatorSize.tab,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                                        child: Row(
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                              child: Text(
+                                                AppLocalizations.of(context)!.rooms,
+                                                style: TextStyle(fontSize: 20, color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold),
+                                              ),
+                                            ),
+                                            Flexible(
+                                              child: Divider(
+                                                thickness: 0.5,
+                                                color: Theme.of(context).colorScheme.secondary,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                                          child: Container(
+                                            child: TabBarView(
+                                              controller: _tabController,
+                                              children: roomView,
                                             ),
                                           ),
                                         ),
-                                        SizedBox(
-                                          height: 50,
-                                          child: VerticalDivider(
-                                            thickness: 0.5,
-                                            color: Theme.of(context).colorScheme.secondary,
-                                          ),
-                                        ),
-                                        TabBar(
-                                          tabAlignment: TabAlignment.center,
-                                          isScrollable: true,
-                                          unselectedLabelColor: Theme.of(context).colorScheme.secondary,
-                                          labelColor: Theme.of(context).colorScheme.primary,
-                                          labelPadding: EdgeInsets.only(right: 10),
-                                          indicatorColor: Colors.transparent,
-                                          dividerColor: Colors.transparent,
-                                          tabs: tabView,
-                                          controller: _tabController,
-                                          indicatorSize: TabBarIndicatorSize.tab,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-                                    child: Row(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                                          child: Text(
-                                            AppLocalizations.of(context)!.rooms,
-                                            style: TextStyle(fontSize: 20, color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: Divider(
-                                            thickness: 0.5,
-                                            color: Theme.of(context).colorScheme.secondary,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-                                      child: TabBarView(
-                                        controller: _tabController,
-                                        children: roomView,
                                       ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            );
-                          } else {
+                                    ],
+                                  ),
+                                );
+                              }
+                            }
+                          }
+                          else if(snapshot.hasError) {
                             return Expanded(
-                                child: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: verticalPadding,
-                                        horizontal: horizontalPadding
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    CircularProgressIndicator(
+                                      color: Theme.of(context).colorScheme.primary,
+                                      backgroundColor: Theme.of(context).colorScheme.surface,
                                     ),
-                                    child: EmptyTabView()
-                                )
+                                    Text('Error'),
+                                  ],
+                                ),
+                              ),
                             );
                           }
                         }
@@ -366,14 +355,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                   ],
                 );
               }
-              return Expanded(
-                child: Center(
-                  child: CircularProgressIndicator(
-                    color: Theme.of(context).colorScheme.primary,
-                    backgroundColor: Theme.of(context).colorScheme.surface,
-                  ),
-                ),
-              );
             }
             return Expanded(
               child: Center(

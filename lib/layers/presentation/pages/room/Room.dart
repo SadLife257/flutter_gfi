@@ -1,26 +1,22 @@
-import 'dart:math';
-
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:gfi/layers/data/data_source/remote/BlynkHTTPService.dart';
+import 'package:gfi/layers/data/data_source/remote/firebase/firestore/device.dart';
 import 'package:gfi/layers/domain/entities/Device/Hardware.dart';
-import 'package:gfi/layers/domain/entities/Room.dart' as RoomData;
+import 'package:gfi/layers/domain/entities/Room/Room.dart' as RoomData;
 import 'package:gfi/layers/presentation/pages/room/RoomManagement.dart';
 import 'package:gfi/layers/presentation/widgets/device/device_controller.dart';
+import 'package:gfi/layers/presentation/widgets/device/device_panel_minimize.dart';
 import 'package:gfi/layers/presentation/widgets/device/device_slider.dart';
 import 'package:gfi/layers/presentation/widgets/room_header_box.dart';
 
 class Room extends StatefulWidget {
-  Color borderColor;
-  Color backgroundColor;
   final RoomData.Room room;
 
   Room({
     super.key,
     required this.room,
-    this.borderColor = Colors.black,
-    this.backgroundColor = Colors.white,}
-  );
+  });
 
   @override
   State<Room> createState() => _RoomState();
@@ -43,15 +39,11 @@ class _RoomState extends State<Room> {
     }
   }
 
-  // List<FlSpot> moveChartForward(double newX, double newY) {
-  //
-  // }
-
   @override
   Widget build(BuildContext context) {
     hardware = widget.room.hardware.values.toList();
     return ListView(
-      shrinkWrap:true,
+      shrinkWrap: true,
       padding: EdgeInsets.symmetric(
           horizontal: 4
       ),
@@ -86,7 +78,6 @@ class _RoomState extends State<Room> {
                 stream: fetchData(blynkService),
                 builder: (context, snapshot) {
                   if(snapshot.hasData) {
-                    int gasLimit = 0;
                     double time = DateTime.now().millisecondsSinceEpoch.toDouble();
                     double gasDetected = snapshot.data?['mq2'].toDouble();
                     if(data.length <= 1 || (time != data.last.x && gasDetected != data.last.y)) {
@@ -98,6 +89,18 @@ class _RoomState extends State<Room> {
                     return DeviceController(
                       isDeviceOnline: snapshot.data?['device_status'],
                       deviceName: hardware[i].name,
+                      isMaximize: hardware[i].isMaximize,
+                      onMaximize: () {
+                        setState(() {
+                          hardware[i].isMaximize = !hardware[i].isMaximize;
+                        });
+                        DeviceCRUDService().updateMaximizeState(
+                          widget.room,
+                          widget.room.hardware.keys.toList()[i],
+                          hardware[i],
+                          hardware[i].isMaximize
+                        );
+                      },
                       isAutoMode: snapshot.data?['auto'],
                       autoModeOnChanged: (value) async {
                         blynkService.updateAutoMode(value);

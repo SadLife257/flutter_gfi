@@ -4,7 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
-import 'package:gfi/layers/domain/entities/Room.dart';
+import 'package:gfi/layers/data/data_source/remote/firebase/firestore/room.dart';
+import 'package:gfi/layers/domain/entities/Room/Room.dart';
 import 'package:intl/intl.dart';
 
 class RoomCreate extends StatefulWidget {
@@ -22,11 +23,7 @@ class _RoomCreateState extends State<RoomCreate> {
   late final TextEditingController roomNameController;
   final roomCreateKey = GlobalKey<FormState>();
   bool _isEmptyInput = true;
-
-  String getTimestamp() {
-    DateFormat formatter = DateFormat("yyyy-MM-dd'T'HH:mm:sss'Z'");
-    return formatter.format(DateTime.now());
-  }
+  bool _isNameExist = false;
 
   String generateRandomString(int len) {
     var r = Random();
@@ -56,16 +53,28 @@ class _RoomCreateState extends State<RoomCreate> {
         });
       }
     });
-
-
-
-    // await FirebaseFirestore.instance.collection('users_info').doc(userId).collection('room').add(newRoom.toJson());
   }
 
   @override
   void initState() {
     roomNameController = TextEditingController();
     super.initState();
+  }
+
+  bool checkNameExist(String value) {
+    FirestoreRoomCRUD().checkRoomNameExist(value.trim()).then((val){
+      if(val == null) {
+        setState(() {
+          _isNameExist = false;
+        });
+      }
+      else {
+        setState(() {
+          _isNameExist = val;
+        });
+      }
+    });
+    return _isNameExist;
   }
 
   @override
@@ -158,7 +167,17 @@ class _RoomCreateState extends State<RoomCreate> {
                       if (value == null || value.isEmpty) {
                         return AppLocalizations.of(context)!.room_name_error_empty;
                       }
+                      if(checkNameExist(value)) {
+                        return AppLocalizations.of(context)!.room_name_error_exist;
+                      }
                       return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        _isEmptyInput = value.isEmpty;
+                        roomNameController.text = value;
+                        checkNameExist(value);
+                      });
                     },
                   ),
                 ),

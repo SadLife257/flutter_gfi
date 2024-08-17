@@ -6,7 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
-import 'package:gfi/layers/domain/entities/UserDetail.dart';
+import 'package:gfi/layers/domain/entities/User/UserDetail.dart';
 import 'package:gfi/layers/presentation/pages/AboutUs.dart';
 import 'package:gfi/layers/presentation/pages/AuthReDirect.dart';
 import 'package:gfi/layers/presentation/widgets/info_box.dart';

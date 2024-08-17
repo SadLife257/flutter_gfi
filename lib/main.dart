@@ -14,8 +14,10 @@ import 'package:gfi/core/utils/dependency_injection.dart';
 import 'package:gfi/layers/data/data_source/local/BackgroundService.dart';
 import 'package:gfi/layers/data/data_source/local/Notification.dart';
 import 'package:gfi/layers/data/data_source/remote/firebase/firestore/room.dart';
-import 'package:gfi/layers/domain/entities/Locale.dart';
-import 'package:gfi/layers/domain/entities/Theme.dart';
+import 'package:gfi/layers/domain/entities/Relation/Hardware_2_Room.dart';
+import 'package:gfi/layers/domain/entities/Notifier/Locale.dart';
+import 'package:gfi/layers/domain/entities/Room/Room.dart';
+import 'package:gfi/layers/domain/entities/Notifier/Theme.dart';
 import 'package:gfi/layers/presentation/pages/AboutUs.dart';
 import 'package:gfi/layers/presentation/pages/AuthReDirect.dart';
 import 'package:gfi/layers/presentation/pages/OnBoarding.dart';
@@ -52,6 +54,10 @@ void main() async{
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
   initScreen = await prefs.getInt("onboard");
+
+  // await Future.delayed(Duration(milliseconds: 500), () {
+  //   runApp(MyApp());
+  // });
 
   runApp(MyApp());
 }
@@ -146,8 +152,8 @@ class _MyAppState extends State<MyApp> {
         onNotificationDisplayedMethod:  NotificationController.onNotificationDisplayedMethod,
         onDismissActionReceivedMethod:  NotificationController.onDismissActionReceivedMethod
     );
-    localeProvider.initialize();
-    themeProvider.initialize();
+    // localeProvider.initialize();
+    // themeProvider.initialize();
     super.initState();
   }
 
@@ -180,10 +186,32 @@ class _MyAppState extends State<MyApp> {
               Profile.route_name: (context) => Profile(),
               AboutUs.route_name: (context) => AboutUs(),
               Notifications.route_name: (context) => Notifications(),
-              RoomManagement.route_name: (context) => RoomManagement(),
               RoomCreate.route_name: (context) => RoomCreate(),
               DeviceScan.route_name: (context) => DeviceScan(),
-              DeviceSetting.route_name: (context) => DeviceSetting(),
+            },
+            onGenerateRoute: (settings) {
+              if (settings.name == RoomManagement.route_name) {
+                final args = settings.arguments as Room;
+                return MaterialPageRoute(
+                  builder: (context) {
+                    return RoomManagement(
+                      room: args,
+                    );
+                  },
+                );
+              }
+              if(settings.name == DeviceSetting.route_name) {
+                final args = settings.arguments as Hardware_2_Room;
+                return MaterialPageRoute(
+                  builder: (context) {
+                    return DeviceSetting(
+                      hardware_2_room: args,
+                    );
+                  },
+                );
+              }
+              assert(false, 'Need to implement ${settings.name}');
+              return null;
             },
           );
         }

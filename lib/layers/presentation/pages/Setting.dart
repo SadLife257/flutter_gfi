@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
-import 'package:gfi/layers/domain/entities/Locale.dart';
-import 'package:gfi/layers/domain/entities/Theme.dart';
+import 'package:gfi/layers/domain/entities/Notifier/Locale.dart';
+import 'package:gfi/layers/domain/entities/Notifier/Theme.dart';
 import 'package:gfi/layers/presentation/pages/room/RoomCreate.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';

@@ -4,9 +4,9 @@ import 'package:gfi/layers/domain/entities/Device/Hardware.dart';
 class Room {
   String name;
   Map<String, Hardware> hardware;
-  DateTime? timestamp;
+  DateTime timestamp;
 
-  Room({required this.name, required this.hardware, this.timestamp});
+  Room({required this.name, required this.hardware, required this.timestamp});
 
   factory Room.fromJson(
       DocumentSnapshot<Map<String, dynamic>> snapshot,

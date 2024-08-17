@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:gfi/layers/domain/entities/Device/Hardware.dart';
-import 'package:gfi/layers/domain/entities/Room.dart';
+import 'package:gfi/layers/domain/entities/Room/Room.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 class DeviceScan extends StatefulWidget {
@@ -120,6 +120,7 @@ class _DeviceScanState extends State<DeviceScan> {
                   name: value[0],
                   image_url: 'assets/images/gas-bottle.png',
                   token: value[1],
+                  isMaximize: true,
                 );
                 addDevice().then((_) {
                   Navigator.popUntil(context, ModalRoute.withName('/'));

@@ -86,6 +86,9 @@
 
     "device_setting": "Cài đặt thiết bị",
     "device_name_label": "Tên thiết bị",
+    "device_name_changed_success": "Thay đổi tên thiết bị thành công!",
+    "device_name_changed_fail": "Thay đổi tên thiết bị thất bại!",
+    "device_name_error_empty": "Xin nhập tên thiết bị của bạn",
     "device_delete_name": "Xóa {device_name}",
     "@device_delete_name": {
         "placeholder": {
@@ -103,8 +106,12 @@
 
     "room_add_explain": "Thêm phòng mới",
     "room_name": "Tên phòng",
+    "room_name_changed_success": "Thay đổi tên phòng thành công!",
+    "room_name_changed_fail": "Thay đổi tên phòng thất bại!",
     "room_name_hint": "Tên phòng",
     "room_name_error_empty": "Xin nhập tên phòng của bạn",
+    "room_name_error_exist": "Tên phòng đã tồn tại!",
+    "room_name_error_same": "Tên phòng mới trùng với tên phòng cũ!",
 
     "room_management": "Quản lý phòng",
     "room_delete_name": "Xóa {room_name}",
@@ -136,6 +143,8 @@
     "servo": "Servo",
     "gas": "Gas",
     "relay": "Relay",
+
+    "setting_language_label": "Hãy chọn ngôn ngữ của bạn",
 
     "setting_language": "{locale, select, en {English} vi {Tiếng Việt} other {-}}",
     "@setting_language": {

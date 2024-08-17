@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:gfi/layers/presentation/pages/AuthReDirect.dart';
 import 'package:gfi/layers/presentation/widgets/onboarding_card.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class OnBoarding extends StatefulWidget {
   const OnBoarding({super.key});

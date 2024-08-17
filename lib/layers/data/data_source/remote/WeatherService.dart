@@ -21,6 +21,5 @@ class OpenWeatherAPI{
       var data = jsonDecode(response.body);
       return data['message'];
     }
-
   }
 }

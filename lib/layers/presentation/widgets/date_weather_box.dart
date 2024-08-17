@@ -35,13 +35,13 @@ class _DateWeatherBoxState extends State<DateWeatherBox> {
   var location;
 
   late dynamic weather_info;
+  late Stream<dynamic> weather_stream;
 
   @override
   void initState() {
     time = _formatDateTime(DateTime.now());
     timer = Timer.periodic(Duration(seconds: 1), (Timer t) => _getTime());
-
-    weather_info = getWeather();
+    weather_stream = Stream.fromFuture(getWeather());
     super.initState();
   }
 
@@ -52,20 +52,22 @@ class _DateWeatherBoxState extends State<DateWeatherBox> {
     latitude = await myLocation.getLat();
     var res = await OpenWeatherAPI(OpenWeatherAPIUrl: 'https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=$openWeatherAPIKeyVar&units=metric');
     if(res == null){
-      print("check API ");
+      print("----check API ");
     }
     result = await res.getWeatherData();
     return result;
   }
 
+  Stream<dynamic> fetchWeather() async* {
+    while (true) {
+      await Future.delayed(Duration(milliseconds: 100));
+      dynamic result = await getWeather();
+      print(result);
+      yield result;
+    }
+  }
+
   void changeUI(dynamic weatherInfo) async {
-    // setState(() {
-    //   temperature = weatherInfo['main']['temp'].toInt();
-    //   conditionId = weatherInfo['weather'][0]['id'];
-    //   cityName = weatherInfo['name'];
-    //   weatherIcon = weather.getWeatherIcon(conditionId);
-    //   weatherMessage = weather.getMessage(temperature);
-    // });
     temperature = weatherInfo['main']['temp'].toInt();
     conditionId = weatherInfo['weather'][0]['id'];
     cityName = weatherInfo['name'];
@@ -118,81 +120,61 @@ class _DateWeatherBoxState extends State<DateWeatherBox> {
             ),
           ],
         ),
-        // Column(
-        //   crossAxisAlignment: CrossAxisAlignment.end,
-        //   children: [
-        //     Text(
-        //         'Temperature'
-        //     ),
-        //     FittedBox(
-        //         fit: BoxFit.scaleDown,
-        //         child: Icon(
-        //           Icons.cloud_outlined,
-        //           size: 60,
-        //           color: Theme.of(context).colorScheme.primary,
-        //         )
-        //     ),
-        //   ],
-        // ),
-        FutureBuilder(
-          future: weather_info,
+        StreamBuilder(
+          stream: weather_stream,
           builder: (context, snapshot) {
-            if(snapshot.connectionState == ConnectionState.done) {
-              if(snapshot.hasData) {
-                changeUI(snapshot.data);
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                            weatherIcon
-                        ),
-                        SizedBox(width: 4,),
-                        Text(
-                            cityName
-                        ),
-                      ],
-                    ),
-                    FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        '${temperature.toString()}°C',
-                        style: TextStyle(fontSize: 60, color: Theme.of(context).colorScheme.primary),
+            if(snapshot.hasData) {
+              changeUI(snapshot.data);
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                          weatherIcon
                       ),
+                      SizedBox(width: 4,),
+                      Text(
+                          cityName
+                      ),
+                    ],
+                  ),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      '${temperature.toString()}°C',
+                      style: TextStyle(fontSize: 60, color: Theme.of(context).colorScheme.primary),
                     ),
-                  ],
-                );
-              }
-              if(snapshot.hasError) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                        'Temperature'
-                    ),
-                    FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: IconButton(
-                          onPressed: () async {
-                            await Geolocator.requestPermission().then((permission) {
-                              if(permission == LocationPermission.whileInUse || permission == LocationPermission.always){
-                                setState(() {
-                                  weather_info = getWeather();
-                                });
-                              }
-                            });
-                          },
-                          icon: Icon(
-                            Icons.cloud_outlined,
-                            size: 60,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        )
-                    ),
-                  ],
-                );
-              }
+                  ),
+                ],
+              );
+            }
+            else if(snapshot.hasError) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                      'Temperature'
+                  ),
+                  FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: IconButton(
+                        onPressed: () async {
+                          await Geolocator.requestPermission().then((permission) {
+                            if(permission == LocationPermission.whileInUse || permission == LocationPermission.always){
+                              getWeather();
+                            }
+                          });
+                        },
+                        icon: Icon(
+                          Icons.cloud_outlined,
+                          size: 60,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      )
+                  ),
+                ],
+              );
             }
             return Column(
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -201,28 +183,26 @@ class _DateWeatherBoxState extends State<DateWeatherBox> {
                     'Temperature'
                 ),
                 FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: IconButton(
-                    onPressed: () async {
-                      await Geolocator.requestPermission().then((permission) {
-                        if(permission == LocationPermission.whileInUse || permission == LocationPermission.always){
-                          setState(() {
-                            weather_info = getWeather();
-                          });
-                        }
-                      });
-                    },
-                    icon: Icon(
-                      Icons.cloud_outlined,
-                      size: 60,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  )
+                    fit: BoxFit.scaleDown,
+                    child: IconButton(
+                      onPressed: () async {
+                        await Geolocator.requestPermission().then((permission) {
+                          if(permission == LocationPermission.whileInUse || permission == LocationPermission.always){
+                            getWeather();
+                          }
+                        });
+                      },
+                      icon: Icon(
+                        Icons.cloud_outlined,
+                        size: 60,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    )
                 ),
               ],
             );
-          },
-        )
+          }
+        ),
       ],
     );
   }

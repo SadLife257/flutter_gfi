@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:gfi/firebase_options.dart';
 import 'package:gfi/layers/domain/entities/Device/Hardware.dart';
-import 'package:gfi/layers/domain/entities/Room.dart';
+import 'package:gfi/layers/domain/entities/Room/Room.dart';
 
 class FirestoreRoomCRUD {
   static final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -19,6 +19,12 @@ class FirestoreRoomCRUD {
     return this;
   }
 
+  Future<bool?> checkRoomNameExist(String name) async {
+    final docRef = await _fireStore.collection('users_room').doc(user.uid).get();
+    bool? result = docRef.data()?.containsKey(name);
+    return result;
+  }
+
   Future<List<Room>> getRoom() async {
     List<Room> rooms = [];
     try {
@@ -32,6 +38,7 @@ class FirestoreRoomCRUD {
                   name: data?['name'],
                   image_url: data?['image_url'],
                   token: data?['token'],
+                  isMaximize: data?['is_maximize'],
                 ))
             ),
             timestamp: v['timestamp'].toDate(),

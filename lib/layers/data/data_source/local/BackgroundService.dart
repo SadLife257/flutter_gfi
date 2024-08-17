@@ -1,6 +1,6 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:gfi/layers/data/data_source/remote/BlynkHTTPService.dart';
-import 'package:gfi/layers/domain/entities/Room.dart';
+import 'package:gfi/layers/domain/entities/Room/Room.dart';
 
 class BackgroundService {
   List<Room> rooms;

@@ -26,42 +26,47 @@ class DeviceScrollWheel extends StatelessWidget {
         borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
         border: Border.all(color: Theme.of(context).colorScheme.primary, width: borderWidth),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            name,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-              overflow: TextOverflow.ellipsis,
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          vertical: 8
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+              name,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 15,
+                overflow: TextOverflow.ellipsis,
+              ),
+              maxLines: 2,
             ),
-            maxLines: 2,
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 8),
-            child: CupertinoPicker(
-              itemExtent: 65,
-              onSelectedItemChanged: onSelectedItemChanged,
-              children: List<Widget>.generate(relay_list.length, (int index) {
-                return Center(
-                  child: Text(
-                    relay_list[index].toString(),
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  )
-                );
-              }),
-              scrollController: FixedExtentScrollController(
-                initialItem: initialItem
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 8),
+              child: CupertinoPicker(
+                itemExtent: 60,
+                onSelectedItemChanged: onSelectedItemChanged,
+                children: List<Widget>.generate(relay_list.length, (int index) {
+                  return Center(
+                    child: Text(
+                      relay_list[index].toString(),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    )
+                  );
+                }),
+                scrollController: FixedExtentScrollController(
+                  initialItem: initialItem
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

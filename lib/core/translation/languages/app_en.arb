@@ -86,6 +86,9 @@
 
     "device_setting": "Device Setting",
     "device_name_label": "Device Name",
+    "device_name_changed_success": "Device name changed success!",
+    "device_name_changed_fail": "Device name changed fail!",
+    "device_name_error_empty": "Please enter your device name",
     "device_delete_name": "Delete {device_name}",
     "@device_delete_name": {
         "placeholder": {
@@ -103,8 +106,12 @@
 
     "room_add_explain": "Add New Room to Your Home",
     "room_name": "Room Name",
+    "room_name_changed_success": "Room name changed success!",
+    "room_name_changed_fail": "Room name changed fail!",
     "room_name_hint": "Room Name",
     "room_name_error_empty": "Please enter your room name",
+    "room_name_error_exist": "Room name already exist!",
+    "room_name_error_same": "Please use a new room name!",
 
     "room_management": "Room Management",
     "room_delete_name": "Delete {room_name}",
@@ -136,6 +143,8 @@
     "servo": "Servo",
     "gas": "Gas",
     "relay": "Relay",
+
+    "setting_language_label": "Please select a language",
 
     "setting_language": "{locale, select, en {English} vi {Tiếng Việt} other {-}}",
     "@setting_language": {

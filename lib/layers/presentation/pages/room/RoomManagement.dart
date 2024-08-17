@@ -2,16 +2,23 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
+import 'package:gfi/layers/data/data_source/remote/firebase/firestore/room.dart';
 import 'package:gfi/layers/domain/entities/Device/Hardware.dart';
-import 'package:gfi/layers/domain/entities/Hardware_2_Room.dart';
-import 'package:gfi/layers/domain/entities/Room.dart';
+import 'package:gfi/layers/domain/entities/Relation/Hardware_2_Room.dart';
+import 'package:gfi/layers/domain/entities/Room/Room.dart';
 import 'package:gfi/layers/presentation/pages/device/DeviceScan.dart';
 import 'package:gfi/layers/presentation/pages/device/DeviceSetting.dart';
 import 'package:gfi/layers/presentation/pages/room/RoomSetting.dart';
 import 'package:gfi/layers/presentation/widgets/device_box.dart';
+import 'package:gfi/layers/presentation/widgets/notify_snackbar.dart';
 
 class RoomManagement extends StatefulWidget {
-  const RoomManagement({super.key});
+  final Room room;
+
+  RoomManagement({
+    super.key,
+    required this.room
+  });
 
   static const route_name = '/manage_room';
 
@@ -24,25 +31,36 @@ class _RoomManagementState extends State<RoomManagement> {
   bool _isEmptyInput = true;
   final roomManagementKey = GlobalKey<FormState>();
   late List<Hardware> hardware;
-  late Room room;
+  late FocusNode node;
+  bool _isNameExist = false;
 
   @override
   void initState() {
+    node = FocusNode();
     roomNameController = TextEditingController();
+    hardware = widget.room.hardware.values.toList();
+    roomNameController.text = widget.room.name;
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    roomNameController.dispose();
+    node.dispose();
+    super.dispose();
   }
 
   Future<void> updateRoomName() async {
     final userId = FirebaseAuth.instance.currentUser!.uid;
 
-    String oldRoomName = room.name;
+    String oldRoomName = widget.room.name;
     String newRoomName = roomNameController.text.trim();
-    room.name = newRoomName;
-
-    //var roomID = await FirebaseFirestore.instance.collection('users_room').doc(userId);
+    Room _newRoom = widget.room;
+    _newRoom.name = newRoomName;
+    //_newRoom.timestamp = DateTime.now();
 
     await FirebaseFirestore.instance.collection('users_room').doc(userId).update({
-      newRoomName: room.toJson()
+      newRoomName: _newRoom.toJson()
     }).then((_) async {
       await FirebaseFirestore.instance.collection('users_room').doc(userId).update({
         oldRoomName: FieldValue.delete()
@@ -102,11 +120,24 @@ class _RoomManagementState extends State<RoomManagement> {
     );
   }
 
+  bool checkNameExist(String value) {
+    FirestoreRoomCRUD().checkRoomNameExist(value.trim()).then((val){
+      if(val == null) {
+        setState(() {
+          _isNameExist = false;
+        });
+      }
+      else {
+        setState(() {
+          _isNameExist = val;
+        });
+      }
+    });
+    return _isNameExist;
+  }
+
   @override
   Widget build(BuildContext context) {
-    room = ModalRoute.of(context)!.settings.arguments as Room;
-    hardware = room.hardware.values.toList();
-    roomNameController.text = room.name;
     return SafeArea(
       child: Scaffold(
         extendBody: true,
@@ -149,6 +180,7 @@ class _RoomManagementState extends State<RoomManagement> {
               Padding(
                 padding: const EdgeInsets.all(32),
                 child: TextFormField(
+                  focusNode: node,
                   controller: roomNameController,
                   style: TextStyle(
                       color: Theme.of(context).colorScheme.primary
@@ -188,7 +220,18 @@ class _RoomManagementState extends State<RoomManagement> {
                       suffixIcon: IconButton(
                         onPressed: () {
                           if(roomManagementKey.currentState!.validate()) {
-                            updateRoomName();
+                            updateRoomName().then((_) {
+                              node.unfocus();
+                              FocusScope.of(context).requestFocus(node);
+
+                              CustomSnack.showNotifySnack(
+                                  context,
+                                  AppLocalizations.of(context)!.room_name_changed_success,
+                                  Icons.check,
+                                  Theme.of(context).colorScheme.primary,
+                                Colors.green,
+                              );
+                            });
                           }
                         },
                         icon: Icon(
@@ -201,12 +244,19 @@ class _RoomManagementState extends State<RoomManagement> {
                     if (value == null || value.isEmpty) {
                       return AppLocalizations.of(context)!.room_name_error_empty;
                     }
+                    if(widget.room.name == value) {
+                      return AppLocalizations.of(context)!.room_name_error_same;
+                    }
+                    if(checkNameExist(value)) {
+                      return AppLocalizations.of(context)!.room_name_error_exist;
+                    }
                     return null;
                   },
                   onChanged: (value) {
                     setState(() {
                       _isEmptyInput = value.isEmpty;
                       roomNameController.text = value;
+                      checkNameExist(value);
                     });
                   },
                 ),
@@ -234,7 +284,7 @@ class _RoomManagementState extends State<RoomManagement> {
               ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: room.hardware.length,
+                itemCount: widget.room.hardware.length,
                 itemBuilder: (BuildContext context, int i) {
                   return DeviceBox(
                     title: hardware[i].name,
@@ -248,8 +298,14 @@ class _RoomManagementState extends State<RoomManagement> {
                       Navigator.pushNamed(
                         context,
                         DeviceSetting.route_name,
-                        arguments: Hardware_2_Room(hardware: hardware[i], room: room),
-                      );
+                        arguments: Hardware_2_Room(
+                          hardware: hardware[i],
+                          room: widget.room,
+                          key: widget.room.hardware.keys.elementAt(i),
+                        ),
+                      ).then((_) {
+                        setState(() {});
+                      });
                     },
                   );
                 }
@@ -270,7 +326,7 @@ class _RoomManagementState extends State<RoomManagement> {
                     Navigator.pushNamed(
                       context,
                       DeviceScan.route_name,
-                      arguments: room,
+                      arguments: widget.room,
                     );
                   },
                   child: Icon(

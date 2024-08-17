@@ -39,35 +39,43 @@ class DeviceVariableBox extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 20,
+                  fontSize: 15,
                   overflow: TextOverflow.ellipsis,
                 ),
                 maxLines: 2,
               ),
-              Text(
-                '$value',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                  overflow: TextOverflow.ellipsis,
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      '$value',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      maxLines: 2,
+                    ),
+                    Divider(
+                      height: 10,
+                      thickness: 1,
+                    ),
+                    Text(
+                      '$limit',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      maxLines: 2,
+                    ),
+                  ],
                 ),
-                maxLines: 2,
-              ),
-              Divider(
-                height: 10,
-                thickness: 1,
-              ),
-              Text(
-                '$limit',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                maxLines: 2,
-              ),
+              )
             ],
           ),
         ),

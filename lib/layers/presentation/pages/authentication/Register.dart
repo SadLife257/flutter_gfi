@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:gfi/layers/data/data_source/remote/firebase/FirebaseAuthenticationService.dart';
-import 'package:gfi/layers/domain/entities/UserDetail.dart';
+import 'package:gfi/layers/domain/entities/User/UserDetail.dart';
 import 'package:gfi/layers/presentation/pages/AuthReDirect.dart';
 
 class Register extends StatefulWidget {

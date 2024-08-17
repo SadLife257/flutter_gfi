@@ -1,5 +1,5 @@
 import 'package:gfi/layers/domain/entities/Device/Hardware.dart';
-import 'package:gfi/layers/domain/entities/Room.dart';
+import 'package:gfi/layers/domain/entities/Room/Room.dart';
 
 class Hardware_2_Room {
   Hardware _hardware;
@@ -18,8 +18,17 @@ class Hardware_2_Room {
     _room = value;
   }
 
+  String _key;
+
+  String get key => _key;
+
+  set key(String value) {
+    _key = value;
+  }
+
   Hardware_2_Room({
     required Hardware hardware,
     required Room room,
-  }) : _room = room, _hardware = hardware;
+    required String key,
+  }) : _room = room, _hardware = hardware, _key = key;
 }

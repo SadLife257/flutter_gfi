@@ -10,6 +10,7 @@ class Hardware {
   String name;
   String image_url;
   String token;
+  bool isMaximize;
   // int gasLimit;
   // int gasDetect;
   // bool isAuto;
@@ -21,6 +22,7 @@ class Hardware {
     required this.name,
     required this.image_url,
     required this.token,
+    required this.isMaximize,
   });
 
   factory Hardware.fromJson(
@@ -32,6 +34,7 @@ class Hardware {
       name: data?['name'],
       image_url: data?['image_url'],
       token: data?['token'],
+      isMaximize: data?['is_maximize'],
     );
   }
 
@@ -40,6 +43,7 @@ class Hardware {
       "name": name,
       "image_url": image_url,
       "token": token,
+      "is_maximize": isMaximize,
     };
   }
 }
