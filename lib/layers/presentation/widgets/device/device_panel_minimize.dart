@@ -105,6 +105,17 @@ class DevicePanelMinimize extends StatelessWidget {
               ),
             ),
             StaggeredGridTile.count(
+                crossAxisCellCount: 2,
+                mainAxisCellCount: 3,
+                child: DeviceScrollWheel(
+                  name: AppLocalizations.of(context)!.relay,
+                  initialItem: relayValue,
+                  relay_list: [0, 1, 2, 3],
+                  onSelectedItemChanged: relayOnChanged,
+                  borderWidth: 0.1,
+                )
+            ),
+            StaggeredGridTile.count(
               crossAxisCellCount: 2,
               mainAxisCellCount: 3,
               child: DeviceVariableBox(
@@ -115,17 +126,6 @@ class DevicePanelMinimize extends StatelessWidget {
                 backgroundColor: Theme.of(context).colorScheme.primary,
                 borderWidth: 0.1,
               ),
-            ),
-            StaggeredGridTile.count(
-                crossAxisCellCount: 2,
-                mainAxisCellCount: 3,
-                child: DeviceScrollWheel(
-                  name: AppLocalizations.of(context)!.relay,
-                  initialItem: relayValue,
-                  relay_list: [0, 1, 2, 3],
-                  onSelectedItemChanged: relayOnChanged,
-                  borderWidth: 0.1,
-                )
             ),
             StaggeredGridTile.count(
               crossAxisCellCount: 4,

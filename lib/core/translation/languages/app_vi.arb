@@ -164,6 +164,24 @@
       }
     },
 
+    "alert_near": "Thông báo từ {room_name} \nGa gần với ngưỡng cho phép",
+    "@alert_near": {
+        "placeholder": {
+            "room_name": {
+                "type": "String"
+            }
+        }
+    },
+
+    "alert_over": "Thông báo từ {room_name} \nGa vượt ngưỡng cho phép",
+    "@alert_over": {
+        "placeholder": {
+            "room_name": {
+                "type": "String"
+            }
+        }
+    },
+
     "onboard_detail":"1|Chào mừng|Hãy cùng xem qua cách để bảo vệ ngôi nhà của bạn khỏi cháy và ngộ độc khí ga nhé.#2|Kết nối thiết bị|Đầu tiên, tạo phòng và kết nối với thiết bị qua mã kết nối#3|Nhận thông báo|Khi thiết bị phát hiện lượng khí ga lớn, chúng tôi sẽ gửi thông báo cho bạn#4|Điều khiển từ xa|Bạn có thể tắt van ga từ xa thông qua điện thoại#5|Xong rồi|Chỉ đơn giản vậy thôi, cảm ơn bạn đã chọn sản phẩm của chúng tôi.",
 
     "about_us": "Về chúng tôi",

@@ -1,6 +1,7 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:gfi/layers/data/data_source/remote/BlynkHTTPService.dart';
 import 'package:gfi/layers/domain/entities/Room/Room.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 class BackgroundService {
   List<Room> rooms;
@@ -29,14 +30,14 @@ class BackgroundService {
             'Warning',
             'From ${i.name} \nGas is over the safety threshold'
           );
-          print('monitorThreshold higher');
+          //print('monitorThreshold higher');
         }
         if(result['mq2'] == result['mq2_threshold']) {
           sendNotification(
             'Warning',
             'From ${i.name} \nGas is near the safety threshold'
           );
-          print('monitorThreshold equal');
+          //print('monitorThreshold equal');
         }
       });
     });

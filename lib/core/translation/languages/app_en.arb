@@ -164,6 +164,25 @@
       }
     },
 
+    "alert_near": "From {room_name} \nGas is near the safety threshold",
+    "@alert_near": {
+        "placeholder": {
+            "room_name": {
+                "type": "String"
+            }
+        }
+    },
+
+    "alert_over": "From {room_name} \nGas is over the safety threshold",
+    "@alert_over": {
+        "placeholder": {
+            "room_name": {
+                "type": "String"
+            }
+        }
+    },
+
+
     "onboard_detail":"1|Welcome|Hey there! \nLet's get started with how you can monitor and protect your home from fire and gas poisoning.#2|Connect to Device|Simply, \ncreate a room that you want to monitor, \nand scan our device connection code.#3|Receive Alert|When we detect a gas build-up in your room, we will send you a notification.#4|Remote Control|You can safely turn off the gas valve from anywhere with your phone.#5|Enjoy|That's about it, thank you for choosing our product.",
 
     "about_us": "About Us",
